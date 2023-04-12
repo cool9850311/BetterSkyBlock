@@ -20,7 +20,7 @@ public class ConfigManager<T> {
         this.configFilePath = BetterSkyBlock.getInstance().getDataFolder() + "/" + defaultConfig.getClass().getSimpleName() + ".yml";
         // Bukkit.getLogger().info("configFilePath:" + configFilePath);
         this.defaultConfig = defaultConfig;
-        // TODO: enclosure new Yaml with options in method
+        // TODO: encapsulate new Yaml with options in method
         DumperOptions options = new DumperOptions();
         options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
         yaml = new Yaml(options);
