@@ -1,14 +1,18 @@
 package com.fnv_tw.configs;
 
+import lombok.Data;
+
+@Data
 public class SQL {
 
-    public Driver driver = Driver.SQLITE;
-    public String host = "localhost";
-    public String database = "BetterSkyBlock";
-    public String username = "";
-    public String password = "";
-    public int port = 3306;
-    public boolean useSSL = false;
+    private String driver = "SQLITE";
+    private String host = "localhost";
+    private String database = "BetterSkyBlock";
+    private String username = "";
+    private String password = "";
+    private int port = 3306;
+    private boolean useSSL = false;
+
 
     /**
      * Represents a Driver of a database.
@@ -16,6 +20,12 @@ public class SQL {
     public enum Driver {
         MYSQL,
         SQLITE
+    }
+    public Driver getEnumDriver(){
+        if (Driver.SQLITE.toString().equals(driver)) {
+            return Driver.SQLITE;
+        }
+        return Driver.MYSQL;
     }
 
 }

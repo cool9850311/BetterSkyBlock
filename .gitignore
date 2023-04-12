@@ -37,3 +37,4 @@ build/
 
 ### Mac OS ###
 .DS_Store
+/out/artifacts/BetterSkyBlock_jar/BetterSkyBlock.jar

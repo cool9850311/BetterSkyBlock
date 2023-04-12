@@ -21,28 +21,26 @@ public class DataBaseManager {
     private static final String MYSQL_DB_URL_PREFIX = "jdbc:mysql://";
 
     private final ConnectionSource connectionSource;
-    private final TableManager tableManager;
 
-
+    // FIXME: you seem to not be using the Xerial SQLite driver. error
     public DataBaseManager(SQL sqlConfig) throws SQLException {
         String dbUrl;
-        switch (sqlConfig.driver) {
+        switch (sqlConfig.getEnumDriver()) {
             case SQLITE:
-                dbUrl = SQLITE_DB_URL_PREFIX + new File(BetterSkyBlock.getInstance().getDataFolder(), sqlConfig.database + ".db");
+                dbUrl = SQLITE_DB_URL_PREFIX + new File(BetterSkyBlock.getInstance().getDataFolder(), sqlConfig.getDatabase() + ".db");
                 break;
             case MYSQL:
-                dbUrl = MYSQL_DB_URL_PREFIX + sqlConfig.host + ":" + sqlConfig.port + "/" + sqlConfig.database + "?useSSL=" + sqlConfig.useSSL;;
+                dbUrl = MYSQL_DB_URL_PREFIX + sqlConfig.getHost() + ":" + sqlConfig.getPort() + "/" + sqlConfig.getDatabase() + "?useSSL=" + sqlConfig.isUseSSL();
                 break;
             default:
-                throw new IllegalArgumentException("Unsupported database type: " + sqlConfig.driver);
+                throw new IllegalArgumentException("Unsupported database type: " + sqlConfig.getDriver());
         }
 
-        logger.info("Connecting to {} database: {}", sqlConfig.driver, dbUrl);
-        connectionSource = new JdbcConnectionSource(dbUrl, sqlConfig.username, sqlConfig.password, DatabaseTypeUtils.createDatabaseType(dbUrl));
-        tableManager = new TableManager(connectionSource);
+        logger.info("Connecting to {} database: {}", sqlConfig.getDriver(), dbUrl);
+        connectionSource = new JdbcConnectionSource(dbUrl, sqlConfig.getUsername(), sqlConfig.getPassword(), DatabaseTypeUtils.createDatabaseType(dbUrl));
     }
-    public TableManager getTableManager() {
-        return tableManager;
+    public ConnectionSource getConnectionSource() {
+        return connectionSource;
     }
 
 //    public void initializeDatabase() throws SQLException {
