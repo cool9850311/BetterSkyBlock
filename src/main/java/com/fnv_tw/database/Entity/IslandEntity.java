@@ -11,7 +11,6 @@ import java.util.Date;
 import java.util.UUID;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
 @DatabaseTable(tableName = "islands")
 public class IslandEntity {
@@ -27,9 +26,12 @@ public class IslandEntity {
     private String description;
     @DatabaseField
     private String home;
-    // FIXME: createTime not working
     @DatabaseField(columnName = "create_time",dataType = DataType.DATE_STRING, format = "yyyy-MM-dd HH:mm:ss")
     private Date createTime;
     @DatabaseField(columnName = "modify_time",dataType = DataType.DATE_STRING, version = true, format = "yyyy-MM-dd HH:mm:ss")
     private Date modifyTime;
+
+    public IslandEntity() {
+        this.createTime = new Date();
+    }
 }
