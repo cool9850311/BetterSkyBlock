@@ -29,9 +29,14 @@ public class BetterSkyBlock extends JavaPlugin {
     @Override
     public void onEnable() {
         super.onEnable();
+        Bukkit.getLogger().info("------------------------------------");
+        Bukkit.getLogger().info("");
+        Bukkit.getLogger().info("Start Enabling BetterSkyBlock");
+        Bukkit.getLogger().info("");
+        Bukkit.getLogger().info("------------------------------------");
         instance = this;
         islandManager = new IslandManager();
-        islandManager.createWorld(World.Environment.NORMAL, "test_world");
+//        islandManager.createWorld(World.Environment.NORMAL, "test_world");
         loadConfigs();
         try {
             dataBaseManager = new DataBaseManager(sqlConfig);
@@ -40,17 +45,22 @@ public class BetterSkyBlock extends JavaPlugin {
             Bukkit.getPluginManager().disablePlugin(this);
             return;
         }
-        IslandEntity islandEntityTest = new IslandEntity();
-        islandEntityTest.setBorderSize(11);
-        islandEntityTest.setName("Test");
-
-        try {
-            IslandDAO islandDAO = new IslandDAO(dataBaseManager.getConnectionSource(), IslandEntity.class);
-            islandDAO.create(islandEntityTest);
-
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+//        IslandEntity islandEntityTest = new IslandEntity();
+//        islandEntityTest.setBorderSize(11);
+//        islandEntityTest.setName("Test");
+//
+//        try {
+//            IslandDAO islandDAO = new IslandDAO(dataBaseManager.getConnectionSource(), IslandEntity.class);
+//            islandDAO.create(islandEntityTest);
+//
+//        } catch (SQLException e) {
+//            throw new RuntimeException(e);
+//        }
+        Bukkit.getLogger().info("------------------------------------");
+        Bukkit.getLogger().info("");
+        Bukkit.getLogger().info("BetterSkyBlock Enabled");
+        Bukkit.getLogger().info("");
+        Bukkit.getLogger().info("------------------------------------");
     }
 
     @Override
