@@ -14,8 +14,10 @@ import org.bukkit.*;
 import org.bukkit.entity.Player;
 
 import java.sql.SQLException;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 public class IslandManager {
     private final IslandDAO islandDAO;
@@ -24,11 +26,13 @@ public class IslandManager {
     private BetterSkyBlock plugin;
     private final Language languageConfig;
     private final MainConfig mainConfig;
+    private Set<String> unUsedWorld;
 
     public IslandManager(){
         plugin = BetterSkyBlock.getInstance();
         languageConfig = plugin.getLanguageConfigManager().getConfig();
         mainConfig = plugin.getMainConfigConfigManager().getConfig();
+        unUsedWorld = new HashSet<>();
         islandDAO = IslandDAO.getInstance(BetterSkyBlock.getInstance().getDataBaseManager().getConnectionSource(), IslandEntity.class);
         islandTrustDAO = IslandTrustDAO.getInstance(BetterSkyBlock.getInstance().getDataBaseManager().getConnectionSource(), IslandTrustEntity.class);
         borderDAO = BorderDAO.getInstance(BetterSkyBlock.getInstance().getDataBaseManager().getConnectionSource(), BorderEntity.class);
@@ -101,8 +105,9 @@ public class IslandManager {
     public void changeIslandName(Player player, String islandName) {
 
     }
-    public void unloadIsland(String islandName) {
-
+    public void unloadIsland(String worldName) {
+        Bukkit.unloadWorld(worldName, true);
+        // Bukkit.getLogger().info("unload world:" + worldName);
     }
     public int getPlayerIslandCount(Player player) {
         try {
@@ -143,5 +148,23 @@ public class IslandManager {
         Location loc = new Location(world,0,0,0);
         loc.getBlock().setType(Material.BEDROCK);
         world.getWorldBorder().setSize(size);
+    }
+    public void unloadUnusedWorldTask() {
+        List<World> worlds = Bukkit.getWorlds();
+        for (World world : worlds) {
+            String worldName = world.getName();
+            if (worldName.equals(mainConfig.getDefaultWorldName()) || worldName.equals(mainConfig.getDefaultNetherName()) ||
+                    worldName.equals(mainConfig.getDefaultTheEndName())){
+                continue;
+            }
+            if (world.getPlayers().size() == 0) {
+                if (unUsedWorld.contains(worldName)){
+                     unloadIsland(world.getName());
+                     unUsedWorld.remove(worldName);
+                     continue;
+                }
+                unUsedWorld.add(worldName);
+            }
+        }
     }
 }
