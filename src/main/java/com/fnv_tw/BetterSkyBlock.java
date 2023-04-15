@@ -50,7 +50,6 @@ public class BetterSkyBlock extends JavaPlugin {
         commandManager = new CommandManager("BetterSkyBlockIsland");
         adminCommandManager = new CommandManager("AdminIslandCommand");
         registerCommands();
-//        islandManager.createWorld(World.Environment.NORMAL, "test_world");
         loadConfigs();
         try {
             dataBaseManager = new DataBaseManager(sqlConfigManager.getConfig());
@@ -60,17 +59,6 @@ public class BetterSkyBlock extends JavaPlugin {
             return;
         }
         islandManager = new IslandManager();
-//        IslandEntity islandEntityTest = new IslandEntity();
-//        islandEntityTest.setBorderSize(11);
-//        islandEntityTest.setName("Test");
-//
-//        try {
-//            IslandDAO islandDAO = new IslandDAO(dataBaseManager.getConnectionSource(), IslandEntity.class);
-//            islandDAO.create(islandEntityTest);
-//
-//        } catch (SQLException e) {
-//            throw new RuntimeException(e);
-//        }
         Bukkit.getLogger().info("------------------------------------");
         Bukkit.getLogger().info("");
         Bukkit.getLogger().info("BetterSkyBlock Enabled");
