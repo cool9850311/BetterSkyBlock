@@ -30,6 +30,15 @@ public class ConfigManager<T> {
     public T getConfig() {
         return configObject;
     }
+    public void saveConfig() {
+        try {
+            FileWriter writer = new FileWriter(configFilePath);
+            yaml.dump(configObject, writer);
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     private void loadConfig() {
         File configFile = new File(configFilePath);
