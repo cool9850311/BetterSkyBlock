@@ -1,3 +1,19 @@
 name: BetterSkyBlock
 main: com.fnv_tw.BetterSkyBlock
 version: 0.0.1
+api-version: '1.13'
+commands:
+  BetterSkyBlockIsland:
+    description: "Main command of BetterSkyBlock"
+    aliases: [is]
+  AdminIslandCommand:
+    description: "Commands for admin only"
+    aliases: [isadmin]
+permissions:
+  betterskyblock.*:
+    description: "All coin shop permissions"
+    default: op
+    children:
+      betterskyblock.usage: true
+  betterskyblock.usage:
+    description: "Permission to use /is"

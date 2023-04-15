@@ -1,26 +1,37 @@
 package com.fnv_tw;
 
+import com.fnv_tw.commands.ChangeIslandName;
+import com.fnv_tw.commands.CreateIsland;
+import com.fnv_tw.commands.TeleportIsland;
+import com.fnv_tw.commands.TeleportNormalWorld;
+import com.fnv_tw.commands.admin.ChangeBorderSize;
+import com.fnv_tw.commands.admin.UnloadIsland;
+import com.fnv_tw.configs.MainConfig;
+import com.fnv_tw.configs.Language;
 import com.fnv_tw.configs.SQL;
-import com.fnv_tw.database.Entity.IslandEntity;
-import com.fnv_tw.database.IslandDAO;
 import com.fnv_tw.generator.VoidGenerator;
+import com.fnv_tw.managers.CommandManager;
 import com.fnv_tw.managers.ConfigManager;
 import com.fnv_tw.managers.DataBaseManager;
 import com.fnv_tw.managers.IslandManager;
+import lombok.Getter;
 import org.bukkit.Bukkit;
-import org.bukkit.World;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.sql.SQLException;
-
+@Getter
 public class BetterSkyBlock extends JavaPlugin {
     private static BetterSkyBlock instance;
     private ChunkGenerator chunkGenerator;
     private DataBaseManager dataBaseManager;
     private IslandManager islandManager;
+    private CommandManager commandManager;
+    private CommandManager adminCommandManager;
 
-    private SQL sqlConfig;
+    private ConfigManager<SQL> sqlConfigManager;
+    private ConfigManager<Language> languageConfigManager;
+    private ConfigManager<MainConfig> mainConfigConfigManager;
     @Override
     public void onLoad() {
         super.onLoad();
@@ -35,16 +46,20 @@ public class BetterSkyBlock extends JavaPlugin {
         Bukkit.getLogger().info("");
         Bukkit.getLogger().info("------------------------------------");
         instance = this;
-        islandManager = new IslandManager();
+
+        commandManager = new CommandManager("BetterSkyBlockIsland");
+        adminCommandManager = new CommandManager("AdminIslandCommand");
+        registerCommands();
 //        islandManager.createWorld(World.Environment.NORMAL, "test_world");
         loadConfigs();
         try {
-            dataBaseManager = new DataBaseManager(sqlConfig);
+            dataBaseManager = new DataBaseManager(sqlConfigManager.getConfig());
         } catch (SQLException e) {
             e.printStackTrace();
             Bukkit.getPluginManager().disablePlugin(this);
             return;
         }
+        islandManager = new IslandManager();
 //        IslandEntity islandEntityTest = new IslandEntity();
 //        islandEntityTest.setBorderSize(11);
 //        islandEntityTest.setName("Test");
@@ -78,7 +93,20 @@ public class BetterSkyBlock extends JavaPlugin {
     }
 
     private void loadConfigs() {
-        sqlConfig = new ConfigManager<>(new SQL()).getConfig();
+        mainConfigConfigManager = new ConfigManager<>(new MainConfig());
+        sqlConfigManager = new ConfigManager<>(new SQL());
+        languageConfigManager = new ConfigManager<>(new Language());
         // Bukkit.getLogger().info("sqlConfig:" + sqlConfig.getPort());
+    }
+    private void registerCommands() {
+        // admin commands
+        adminCommandManager.registerCommand("changeBorderSize",new ChangeBorderSize());
+        adminCommandManager.registerCommand("unloadIsland", new UnloadIsland());
+        // general commands
+        commandManager.registerCommand("create",new CreateIsland());
+        commandManager.registerCommand("tp",new TeleportIsland());
+        commandManager.registerCommand("tpNormal",new TeleportNormalWorld());
+        commandManager.registerCommand("changeIslandName",new ChangeIslandName());
+
     }
 }
