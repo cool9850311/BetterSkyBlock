@@ -5,33 +5,25 @@ import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.util.Date;
 import java.util.UUID;
 
 @Data
 @AllArgsConstructor
-@DatabaseTable(tableName = "islands")
-public class IslandEntity {
+@DatabaseTable(tableName = "player_border")
+public class BorderEntity {
     @DatabaseField(generatedId = true)
     private int id;
-    @DatabaseField(columnName = "owner_uuid")
-    private UUID ownerUuid;
-    @DatabaseField(unique = true)
-    private String name;
-    @DatabaseField(columnName = "bungee_server_name")
-    private String bungeeServerName;
-    @DatabaseField
-    private String description;
-    @DatabaseField
-    private String home;
+    @DatabaseField(columnName = "player_uuid", unique = true)
+    private UUID playerUuid;
+    @DatabaseField(columnName = "border_size")
+    private int borderSize;
     @DatabaseField(columnName = "create_time",dataType = DataType.DATE_STRING, format = "yyyy-MM-dd HH:mm:ss")
     private Date createTime;
     @DatabaseField(columnName = "modify_time",dataType = DataType.DATE_STRING, version = true, format = "yyyy-MM-dd HH:mm:ss")
     private Date modifyTime;
-
-    public IslandEntity() {
+    public BorderEntity() {
         this.createTime = new Date();
     }
 }
