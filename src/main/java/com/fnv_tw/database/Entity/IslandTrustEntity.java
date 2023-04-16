@@ -13,9 +13,9 @@ import java.util.UUID;
 @AllArgsConstructor
 @DatabaseTable(tableName = "island_trust")
 public class IslandTrustEntity {
-    @DatabaseField
+    @DatabaseField(columnName = "island_id", uniqueCombo = true)
     private int islandId;
-    @DatabaseField(columnName = "player_uuid")
+    @DatabaseField(columnName = "player_uuid", uniqueCombo = true)
     private UUID playerUuid;
     @DatabaseField(columnName = "operator_uuid")
     private UUID operatorUuid;
