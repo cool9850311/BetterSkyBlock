@@ -37,8 +37,6 @@ public class IslandManager {
         islandTrustDAO = IslandTrustDAO.getInstance(BetterSkyBlock.getInstance().getDataBaseManager().getConnectionSource(), IslandTrustEntity.class);
         borderDAO = BorderDAO.getInstance(BetterSkyBlock.getInstance().getDataBaseManager().getConnectionSource(), BorderEntity.class);
     }
-    //TODO: trust and owner only
-    // TODO: home point first
     // TODO:BungeeCord
     public void teleportToIsland(Player player, String islandName){
         if (!isIslandExist(islandName)) {
