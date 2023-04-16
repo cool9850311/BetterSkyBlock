@@ -13,4 +13,11 @@ public class Language {
     private String createIslandSuccess = "Island create successfully, wait for teleport.";
     private String islandNameNotExistOnTeleport = "Island name does not exist.";
     private String loadIslandPleaseWait = "Loading Island, please wait.";
+    private String notInIslandTrustList = "You can not join an untrusted island.";
+    private String alreadyTrusted = "This Player is already in trust list.";
+    private String notTrusted = "This Player is not in trust list.";
+    private String playerNotFound = "Player not found or offline.";
+    private String addTrustSuccess = "Add player to trust list successfully.";
+    private String removeTrustSuccess = "Remove player from trust list successfully.";
+    private String ownerAlwaysTrusted = "Island owner is always trusted.";
 }
