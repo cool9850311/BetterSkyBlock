@@ -1,9 +1,6 @@
 package com.fnv_tw;
 
-import com.fnv_tw.commands.ChangeIslandName;
-import com.fnv_tw.commands.CreateIsland;
-import com.fnv_tw.commands.TeleportIsland;
-import com.fnv_tw.commands.TeleportNormalWorld;
+import com.fnv_tw.commands.*;
 import com.fnv_tw.commands.admin.ChangeBorderSize;
 import com.fnv_tw.commands.admin.UnloadIsland;
 import com.fnv_tw.configs.MainConfig;
@@ -75,6 +72,11 @@ public class BetterSkyBlock extends JavaPlugin {
     @Override
     public void onDisable() {
         super.onDisable();
+        Bukkit.getLogger().info("------------------------------------");
+        Bukkit.getLogger().info("");
+        Bukkit.getLogger().info("BetterSkyBlock Disabled");
+        Bukkit.getLogger().info("");
+        Bukkit.getLogger().info("------------------------------------");
     }
 
     public static BetterSkyBlock getInstance() {
@@ -101,6 +103,7 @@ public class BetterSkyBlock extends JavaPlugin {
         commandManager.registerCommand("tp",new TeleportIsland());
         commandManager.registerCommand("tpNormal",new TeleportNormalWorld());
         commandManager.registerCommand("changeIslandName",new ChangeIslandName());
-
+        commandManager.registerCommand("sethome",new ChangeHome());
+        commandManager.registerCommand("trust",new Trust());
     }
 }

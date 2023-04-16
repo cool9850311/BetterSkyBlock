@@ -10,14 +10,14 @@ import com.fnv_tw.database.Entity.IslandTrustEntity;
 import com.fnv_tw.database.IslandDAO;
 import com.fnv_tw.database.IslandTrustDAO;
 import com.fnv_tw.utils.LocationUtil;
+import com.j256.ormlite.stmt.DeleteBuilder;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
+import org.bukkit.util.Vector;
 
 import java.sql.SQLException;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class IslandManager {
     private final IslandDAO islandDAO;
@@ -38,26 +38,31 @@ public class IslandManager {
         borderDAO = BorderDAO.getInstance(BetterSkyBlock.getInstance().getDataBaseManager().getConnectionSource(), BorderEntity.class);
     }
     //TODO: trust and owner only
+    // TODO: home point first
+    // TODO:BungeeCord
     public void teleportToIsland(Player player, String islandName){
         if (!isIslandExist(islandName)) {
             player.sendMessage(ChatColor.RED + languageConfig.getIslandNameNotExistOnTeleport());
             return;
         }
-        // {uuid}_{islandId}
-        String islandWorldName = null;
+        if (!isPlayerTrusted(player, islandName) && !isPublicIsland(islandName)) {
+            player.sendMessage(ChatColor.RED + languageConfig.getNotInIslandTrustList());
+            return;
+        }
         try {
-            islandWorldName = player.getUniqueId() + "_" + getIslandId(islandName);
+            int islandId = getIslandId(islandName);
+            // {uuid}_{islandId}
+            String islandWorldName = player.getUniqueId() + "_" + islandId;
+            World world = createAndLoadActualWorld(World.Environment.NORMAL, islandWorldName);
+
+            IslandEntity islandIdEntity = islandDAO.queryForId(islandId);
+            Vector vector =  islandIdEntity.getHome();
+            player.setFallDistance(0.0f);
+            player.teleport(LocationUtil.getSafeLocation(new Location(world,vector.getX(),vector.getY(),vector.getZ())));
         } catch (Exception e) {
             e.printStackTrace();
             player.sendMessage(ChatColor.RED + languageConfig.getServerError());
-            return;
         }
-        // load
-        World world = createActualWorld(World.Environment.NORMAL, islandWorldName);
-        // TODO:tp home first
-        // TODO:BungeeCord
-        player.setFallDistance(0.0f);
-        player.teleport(LocationUtil.getSafeLocation(new Location(world,0,0,0)));
     }
     public void createWorld(Player player, String islandName) {
         if (isIslandExist(islandName)) {
@@ -71,6 +76,8 @@ public class IslandManager {
         IslandEntity islandEntity = new IslandEntity();
         islandEntity.setOwnerUuid(player.getUniqueId());
         islandEntity.setName(islandName);
+        islandEntity.setHome(new Vector(0,0,0));
+        islandEntity.setPublicIsland(mainConfig.isDefaultPublicIsland());
         if (mainConfig.isBungeeCord()){
             islandEntity.setBungeeServerName(mainConfig.getCurrentBungeeCordServerName());
         }
@@ -78,8 +85,7 @@ public class IslandManager {
         try {
             islandDAO.create(islandEntity);
             player.sendMessage(ChatColor.GOLD + languageConfig.getLoadIslandPleaseWait());
-            World world = createActualWorld(World.Environment.NORMAL, player.getUniqueId() + "_" + getIslandId(islandName));
-
+            World world = createAndLoadActualWorld(World.Environment.NORMAL, player.getUniqueId() + "_" + getIslandId(islandName));
             initIsland(world, getPlayerBorderSize(player));
         } catch (Exception e) {
             e.printStackTrace();
@@ -118,7 +124,10 @@ public class IslandManager {
             return Integer.MAX_VALUE;
         }
     }
-    public World createActualWorld(World.Environment environment, String name) {
+    // TODO: Different World.Environment
+    // TODO: update border size to owner's border size
+    // if exist load only
+    public World createAndLoadActualWorld(World.Environment environment, String name) {
         WorldCreator worldCreator = new WorldCreator(name)
                 .generator(BetterSkyBlock.getInstance().getDefaultWorldGenerator(name, null))
                 .environment(environment);
@@ -130,7 +139,6 @@ public class IslandManager {
             return islandIdEntity.get().getId();
         }
         throw new Exception("Can not found Island id with" + islandName);
-
     }
     private int getPlayerBorderSize(Player player) {
         try {
@@ -166,5 +174,117 @@ public class IslandManager {
                 unUsedWorld.add(worldName);
             }
         }
+    }
+    public boolean isIslandOwner(Player player, String islandName) {
+        UUID owner = null;
+        try {
+            int islandId = getIslandId(islandName);
+            owner = islandDAO.queryForId(islandId).getOwnerUuid();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+        if (owner.equals(player.getUniqueId())) {
+            return true;
+        }
+        return false;
+    }
+    public boolean isPlayerTrusted(Player player, String islandName) {
+        try {
+
+            int islandId = getIslandId(islandName);
+            // Owner must be trusted
+            if (isIslandOwner(player, islandName)) {
+                return true;
+            }
+            List<UUID> islandTrustEntity = islandTrustDAO.queryForEq("islandId", islandId).stream().map(IslandTrustEntity::getPlayerUuid).toList();
+            if (islandTrustEntity.contains(player.getUniqueId())) {
+                return true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+        return false;
+    }
+    // islandName must exist
+    public void addPlayerTrusted(Player operator, String islandName, String addPlayerString) {
+        try {
+            Player addPlayer = Bukkit.getPlayer(addPlayerString);
+            if (addPlayer == null) {
+                operator.sendMessage(ChatColor.RED + languageConfig.getPlayerNotFound());
+                return;
+            }
+            // islandName must exist
+            if (!isIslandOwner(operator, islandName)) {
+                operator.sendMessage(ChatColor.RED + languageConfig.getDoNotHasPermission());
+                return;
+            }
+            if (addPlayer.equals(operator)) {
+                operator.sendMessage(ChatColor.RED + languageConfig.getOwnerAlwaysTrusted());
+                return;
+            }
+            if (isPlayerTrusted(addPlayer, islandName)) {
+                operator.sendMessage(ChatColor.RED + languageConfig.getAlreadyTrusted());
+                return;
+            }
+            IslandTrustEntity islandTrustEntity = new IslandTrustEntity();
+            int islandId = getIslandId(islandName);
+            islandTrustEntity.setIslandId(islandId);
+            islandTrustEntity.setPlayerUuid(addPlayer.getUniqueId());
+            islandTrustEntity.setOperatorUuid(operator.getUniqueId());
+            islandTrustDAO.create(islandTrustEntity);
+            operator.sendMessage(ChatColor.GOLD + languageConfig.getAddTrustSuccess());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    public void removePlayerTrusted(Player operator, String islandName, String removePlayerString) {
+        try {
+            Player removePlayer = Bukkit.getPlayer(removePlayerString);
+            if (removePlayer == null) {
+                operator.sendMessage(ChatColor.RED + languageConfig.getPlayerNotFound());
+                return;
+            }
+            // islandName must exist
+            if (!isIslandOwner(operator, islandName)) {
+                operator.sendMessage(ChatColor.RED + languageConfig.getDoNotHasPermission());
+                return;
+            }
+            if (removePlayer.equals(operator)) {
+                operator.sendMessage(ChatColor.RED + languageConfig.getOwnerAlwaysTrusted());
+                return;
+            }
+            if (!isPlayerTrusted(removePlayer, islandName)) {
+                operator.sendMessage(ChatColor.RED + languageConfig.getNotTrusted());
+                return;
+            }
+            IslandTrustEntity islandTrustEntity = new IslandTrustEntity();
+            int islandId = getIslandId(islandName);
+            DeleteBuilder<IslandTrustEntity, Integer> deleteBuilder = islandTrustDAO.deleteBuilder();
+            deleteBuilder.where().eq("player_uuid", removePlayer.getUniqueId()).and().eq("island_id", islandId);
+            deleteBuilder.delete();
+            operator.sendMessage(ChatColor.GOLD + languageConfig.getRemoveTrustSuccess());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    public boolean isPublicIsland(String islandName) {
+        try {
+            int islandId = getIslandId(islandName);
+            return islandDAO.queryForId(islandId).isPublicIsland();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    public String getIslandNameById(int islandId) {
+        try {
+            return islandDAO.queryForId(islandId).getName();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }
