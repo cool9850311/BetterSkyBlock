@@ -21,12 +21,12 @@ import java.util.stream.Collectors;
 
 public class IslandManager {
     private final IslandDAO islandDAO;
-    private IslandTrustDAO islandTrustDAO;
-    private BorderDAO borderDAO;
+    private final IslandTrustDAO islandTrustDAO;
+    private final BorderDAO borderDAO;
     private BetterSkyBlock plugin;
     private final Language languageConfig;
     private final MainConfig mainConfig;
-    private Set<String> unUsedWorld;
+    private final Set<String> unUsedWorld;
 
     public IslandManager(){
         plugin = BetterSkyBlock.getInstance();
@@ -79,7 +79,6 @@ public class IslandManager {
         if (mainConfig.isBungeeCord()){
             islandEntity.setBungeeServerName(mainConfig.getCurrentBungeeCordServerName());
         }
-        int islandId;
         try {
             islandDAO.create(islandEntity);
             player.sendMessage(ChatColor.GOLD + languageConfig.getLoadIslandPleaseWait());

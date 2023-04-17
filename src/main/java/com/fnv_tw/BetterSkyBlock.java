@@ -7,6 +7,7 @@ import com.fnv_tw.configs.MainConfig;
 import com.fnv_tw.configs.Language;
 import com.fnv_tw.configs.SQL;
 import com.fnv_tw.generator.VoidGenerator;
+import com.fnv_tw.listeners.PlayerListener;
 import com.fnv_tw.managers.CommandManager;
 import com.fnv_tw.managers.ConfigManager;
 import com.fnv_tw.managers.DataBaseManager;
@@ -43,11 +44,10 @@ public class BetterSkyBlock extends JavaPlugin {
         Bukkit.getLogger().info("");
         Bukkit.getLogger().info("------------------------------------");
         instance = this;
-
+        loadConfigs();
         commandManager = new CommandManager("BetterSkyBlockIsland");
         adminCommandManager = new CommandManager("AdminIslandCommand");
         registerCommands();
-        loadConfigs();
         try {
             dataBaseManager = new DataBaseManager(sqlConfigManager.getConfig());
         } catch (SQLException e) {
@@ -56,6 +56,7 @@ public class BetterSkyBlock extends JavaPlugin {
             return;
         }
         islandManager = new IslandManager();
+        registerEvents();
         // 30s
         Bukkit.getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
             public void run() {
@@ -105,5 +106,8 @@ public class BetterSkyBlock extends JavaPlugin {
         commandManager.registerCommand("changeIslandName",new ChangeIslandName());
         commandManager.registerCommand("sethome",new ChangeHome());
         commandManager.registerCommand("trust",new Trust());
+    }
+    private void registerEvents() {
+        getServer().getPluginManager().registerEvents(new PlayerListener(), this);
     }
 }
