@@ -58,11 +58,7 @@ public class BetterSkyBlock extends JavaPlugin {
         islandManager = new IslandManager();
         registerEvents();
         // 30s
-        Bukkit.getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
-            public void run() {
-                islandManager.unloadUnusedWorldTask();
-            }
-        }, 0L, 600L);
+        Bukkit.getScheduler().scheduleSyncRepeatingTask(this, () -> islandManager.unloadUnusedWorldTask(), 0L, 600L);
         Bukkit.getLogger().info("------------------------------------");
         Bukkit.getLogger().info("");
         Bukkit.getLogger().info("BetterSkyBlock Enabled");
