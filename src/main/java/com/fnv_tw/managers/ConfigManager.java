@@ -5,6 +5,7 @@ import org.bukkit.Bukkit;
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
+import org.yaml.snakeyaml.representer.Representer;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -32,6 +33,9 @@ public class ConfigManager<T> {
     }
     public void saveConfig() {
         try {
+            DumperOptions options = new DumperOptions();
+            options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
+            yaml = new Yaml(options);
             FileWriter writer = new FileWriter(configFilePath);
             yaml.dump(configObject, writer);
             writer.close();
@@ -44,8 +48,12 @@ public class ConfigManager<T> {
         File configFile = new File(configFilePath);
         if (configFile.exists()) {
             try (InputStream inputStream = Files.newInputStream(Paths.get(configFilePath))) {
-                yaml = new Yaml(new Constructor(defaultConfig.getClass()));
+                Constructor constructor = new Constructor(defaultConfig.getClass());
+                Representer representer = new Representer();
+                representer.getPropertyUtils().setSkipMissingProperties(true);
+                yaml = new Yaml(new Constructor(defaultConfig.getClass()),representer);
                 configObject = yaml.load(inputStream);
+                saveConfig();
             } catch (IOException e) {
                 e.printStackTrace();
             }
