@@ -48,9 +48,12 @@ public class CommandManager implements TabCompleter, CommandExecutor {
             }
         }
     }
-
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+        if (args.length == 0) {
+            // TODO: Main GUI
+            return false;
+        }
         CommandExecutor executor = commands.get(args[0]);
         if (executor != null) {
             return executor.onCommand(sender, command, label, args);
