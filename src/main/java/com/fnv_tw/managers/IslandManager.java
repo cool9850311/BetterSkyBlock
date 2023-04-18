@@ -10,6 +10,7 @@ import com.fnv_tw.database.Entity.IslandTrustEntity;
 import com.fnv_tw.database.IslandDAO;
 import com.fnv_tw.database.IslandTrustDAO;
 import com.fnv_tw.utils.LocationUtil;
+import com.j256.ormlite.dao.GenericRawResults;
 import com.j256.ormlite.stmt.DeleteBuilder;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
@@ -291,5 +292,24 @@ public class IslandManager {
             e.printStackTrace();
         }
         return null;
+    }
+    public List<String> getTrustedIslandName (Player player) {
+        List<String> allTrustedIsland = new ArrayList<>();
+        try {
+            List<String> ownedIsland = islandDAO.queryForEq("owner_uuid", player.getUniqueId()).stream()
+                    .map(IslandEntity::getName).toList();
+            //
+            String sql = "SELECT i.name FROM islands i JOIN island_trust t ON i.id = t.island_id WHERE t.player_uuid = ?";
+            GenericRawResults<String[]> rawResults = islandDAO.queryRaw(sql, player.getUniqueId().toString());
+            List<String> trustedIsland = rawResults.getResults().stream().map(result -> result[0]).toList();
+
+            allTrustedIsland.addAll(ownedIsland);
+            allTrustedIsland.addAll(trustedIsland);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return allTrustedIsland;
+        }
+        return allTrustedIsland;
     }
 }

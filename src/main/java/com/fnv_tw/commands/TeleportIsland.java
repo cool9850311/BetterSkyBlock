@@ -38,6 +38,11 @@ public class TeleportIsland implements TabCompleter, CommandExecutor {
     @Nullable
     @Override
     public List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] strings) {
+
+        if (strings.length == 2) {
+            BetterSkyBlock plugin = BetterSkyBlock.getInstance();
+            return plugin.getIslandManager().getTrustedIslandName((Player) commandSender);
+        }
         return null;
     }
 }
