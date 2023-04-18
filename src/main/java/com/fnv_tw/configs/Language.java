@@ -20,4 +20,5 @@ public class Language {
     private String addTrustSuccess = "Add player to trust list successfully.";
     private String removeTrustSuccess = "Remove player from trust list successfully.";
     private String ownerAlwaysTrusted = "Island owner is always trusted.";
+    private String notOnIsland = "You are not on an island.";
 }

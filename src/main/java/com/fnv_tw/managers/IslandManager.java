@@ -52,7 +52,6 @@ public class IslandManager {
             // {uuid}_{islandId}
             String islandWorldName = player.getUniqueId() + "_" + islandId;
             World world = createAndLoadActualWorld(World.Environment.NORMAL, islandWorldName);
-
             IslandEntity islandIdEntity = islandDAO.queryForId(islandId);
             Vector vector =  islandIdEntity.getHome();
             player.setFallDistance(0.0f);
@@ -82,8 +81,7 @@ public class IslandManager {
         try {
             islandDAO.create(islandEntity);
             player.sendMessage(ChatColor.GOLD + languageConfig.getLoadIslandPleaseWait());
-            World world = createAndLoadActualWorld(World.Environment.NORMAL, player.getUniqueId() + "_" + getIslandId(islandName));
-            initIsland(world, getPlayerBorderSize(player));
+            createAndLoadActualWorld(World.Environment.NORMAL, player.getUniqueId() + "_" + getIslandId(islandName));
         } catch (Exception e) {
             e.printStackTrace();
             player.sendMessage(ChatColor.RED + languageConfig.getServerError());
@@ -122,13 +120,14 @@ public class IslandManager {
         }
     }
     // TODO: Different World.Environment
-    // TODO: update border size to owner's border size
     // if exist load only
     public World createAndLoadActualWorld(World.Environment environment, String name) {
         WorldCreator worldCreator = new WorldCreator(name)
                 .generator(BetterSkyBlock.getInstance().getDefaultWorldGenerator(name, null))
                 .environment(environment);
-        return Bukkit.createWorld(worldCreator);
+        World world = Bukkit.createWorld(worldCreator);
+        initIsland(world);
+        return world;
     }
     private int getIslandId(String islandName) throws Exception{
         Optional<IslandEntity> islandIdEntity = islandDAO.queryForEq("name", islandName).stream().findFirst();
@@ -137,9 +136,9 @@ public class IslandManager {
         }
         throw new Exception("Can not found Island id with" + islandName);
     }
-    private int getPlayerBorderSize(Player player) {
+    private int getPlayerBorderSize(UUID playerUUID) {
         try {
-            Optional<BorderEntity> borderEntity = borderDAO.queryForEq("player_uuid", player.getUniqueId()).stream().findFirst();
+            Optional<BorderEntity> borderEntity = borderDAO.queryForEq("player_uuid", playerUUID).stream().findFirst();
             if (borderEntity.isPresent()) {
                 return borderEntity.get().getBorderSize();
             }
@@ -149,10 +148,13 @@ public class IslandManager {
         return mainConfig.getDefaultBorderSize();
     }
 
-    private void initIsland(World world, int size) {
+    private void initIsland(World world) {
         Location loc = new Location(world,0,0,0);
-        loc.getBlock().setType(Material.BEDROCK);
-        world.getWorldBorder().setSize(size);
+        if (loc.getBlock().isEmpty()) {
+            loc.getBlock().setType(Material.BEDROCK);
+        }
+        UUID playerUUID = UUID.fromString(world.getName().split("_")[0]);
+        world.getWorldBorder().setSize(getPlayerBorderSize(playerUUID));
     }
     public void unloadUnusedWorldTask() {
         List<World> worlds = Bukkit.getWorlds();
@@ -212,7 +214,10 @@ public class IslandManager {
                 operator.sendMessage(ChatColor.RED + languageConfig.getPlayerNotFound());
                 return;
             }
-            // islandName must exist
+            if (!isIslandExist(islandName)) {
+                operator.sendMessage(ChatColor.RED + languageConfig.getNotOnIsland());
+                return;
+            }
             if (!isIslandOwner(operator, islandName)) {
                 operator.sendMessage(ChatColor.RED + languageConfig.getDoNotHasPermission());
                 return;
@@ -243,7 +248,10 @@ public class IslandManager {
                 operator.sendMessage(ChatColor.RED + languageConfig.getPlayerNotFound());
                 return;
             }
-            // islandName must exist
+            if (!isIslandExist(islandName)) {
+                operator.sendMessage(ChatColor.RED + languageConfig.getNotOnIsland());
+                return;
+            }
             if (!isIslandOwner(operator, islandName)) {
                 operator.sendMessage(ChatColor.RED + languageConfig.getDoNotHasPermission());
                 return;

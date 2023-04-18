@@ -32,19 +32,24 @@ public class Trust implements TabCompleter, CommandExecutor {
             commandSender.sendMessage(ChatColor.RED + languageConfig.getWrongCommand());
             return false;
         }
-        int islandId = Integer.parseInt(((Player) commandSender).getWorld().getName().split("_")[1]);
-        String islandName = plugin.getIslandManager().getIslandNameById(islandId);
-        if (islandName == null) {
-            commandSender.sendMessage(ChatColor.RED + languageConfig.getServerError());
+        String worldName = ((Player) commandSender).getWorld().getName();
+        if (worldName.equals(mainConfig.getDefaultWorldName()) || worldName.equals(mainConfig.getDefaultNetherName()) ||
+                worldName.equals(mainConfig.getDefaultTheEndName())){
+            commandSender.sendMessage(ChatColor.RED + languageConfig.getNotOnIsland());
             return false;
         }
+        int islandId = Integer.parseInt(((Player) commandSender).getWorld().getName().split("_")[1]);
+        String islandName = plugin.getIslandManager().getIslandNameById(islandId);
         if (strings[1].equals("add")) {
             plugin.getIslandManager().addPlayerTrusted(((Player) commandSender), islandName, strings[2]);
+            return true;
         }
         if (strings[1].equals("remove")) {
             plugin.getIslandManager().removePlayerTrusted(((Player) commandSender), islandName, strings[2]);
+            return true;
         }
-        return true;
+        commandSender.sendMessage(ChatColor.RED + languageConfig.getWrongCommand());
+        return false;
     }
 
     @Nullable
