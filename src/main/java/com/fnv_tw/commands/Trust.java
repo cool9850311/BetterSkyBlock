@@ -34,8 +34,7 @@ public class Trust implements TabCompleter, CommandExecutor {
             return false;
         }
         String worldName = ((Player) commandSender).getWorld().getName();
-        if (worldName.equals(mainConfig.getDefaultWorldName()) || worldName.equals(mainConfig.getDefaultNetherName()) ||
-                worldName.equals(mainConfig.getDefaultTheEndName())){
+        if (!plugin.getIslandManager().isInIslandWorld(worldName)){
             commandSender.sendMessage(ChatColor.RED + languageConfig.getNotOnIsland());
             return false;
         }

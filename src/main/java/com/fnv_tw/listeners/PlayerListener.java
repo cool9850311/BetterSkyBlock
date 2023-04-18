@@ -25,8 +25,7 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onPlayerTeleport(PlayerTeleportEvent e) {
         String worldName = e.getTo().getWorld().getName();
-        if (worldName.equals(mainConfig.getDefaultWorldName()) || worldName.equals(mainConfig.getDefaultNetherName()) ||
-                worldName.equals(mainConfig.getDefaultTheEndName())){
+        if (!islandManager.isInIslandWorld(worldName)){
             return;
         }
         int islandId = Integer.parseInt(e.getTo().getWorld().getName().split("_")[1]);

@@ -161,8 +161,7 @@ public class IslandManager {
         List<World> worlds = Bukkit.getWorlds();
         for (World world : worlds) {
             String worldName = world.getName();
-            if (worldName.equals(mainConfig.getDefaultWorldName()) || worldName.equals(mainConfig.getDefaultNetherName()) ||
-                    worldName.equals(mainConfig.getDefaultTheEndName())){
+            if (!isInIslandWorld(worldName)){
                 continue;
             }
             if (world.getPlayers().size() == 0) {
@@ -311,5 +310,23 @@ public class IslandManager {
             return allTrustedIsland;
         }
         return allTrustedIsland;
+    }
+    public boolean isInIslandWorld(String islandWorldName) {
+        if (islandWorldName.equals(mainConfig.getDefaultWorldName()) || islandWorldName.equals(mainConfig.getDefaultNetherName()) ||
+                islandWorldName.equals(mainConfig.getDefaultTheEndName())) {
+            return false;
+        }
+        return true;
+    }
+    public void changeIslandName(Player player) {
+
+//        if (!isIslandExist(islandName)) {
+//            player.sendMessage(ChatColor.RED + languageConfig.getNotOnIsland());
+//            return;
+//        }
+//        if (!isIslandOwner(player, islandName)) {
+//            player.sendMessage(ChatColor.RED + languageConfig.getDoNotHasPermission());
+//            return;
+//        }
     }
 }
