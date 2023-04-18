@@ -104,9 +104,6 @@ public class IslandManager {
         }
         return true;
     }
-    public void changeIslandName(Player player, String islandName) {
-
-    }
     public void unloadIsland(String worldName) {
         Bukkit.unloadWorld(worldName, true);
         // Bukkit.getLogger().info("unload world:" + worldName);
@@ -318,15 +315,61 @@ public class IslandManager {
         }
         return true;
     }
-    public void changeIslandName(Player player) {
+    public void changeIslandHome(Player player) {
+        String worldName = player.getWorld().getName();
+        if (!plugin.getIslandManager().isInIslandWorld(worldName)){
+            player.sendMessage(ChatColor.RED + languageConfig.getNotOnIsland());
+            return;
+        }
+        int islandId = Integer.parseInt(player.getWorld().getName().split("_")[1]);
+        String islandName = plugin.getIslandManager().getIslandNameById(islandId);
+        if (!isIslandExist(islandName)) {
+            player.sendMessage(ChatColor.RED + languageConfig.getNotOnIsland());
+            return;
+        }
+        if (!isIslandOwner(player, islandName)) {
+            player.sendMessage(ChatColor.RED + languageConfig.getDoNotHasPermission());
+            return;
+        }
+        try {
+            IslandEntity islandEntity = islandDAO.queryForId(islandId);
+            islandEntity.setHome(player.getLocation().toVector());
+            islandDAO.update(islandEntity);
+        } catch (SQLException e) {
+            player.sendMessage(ChatColor.RED + languageConfig.getServerError());
+            e.printStackTrace();
+        }
+        player.sendMessage(ChatColor.GOLD + languageConfig.getSetHomeSuccess());
+    }
+    public void changeIslandName(Player player, String newIslandName) {
+        String worldName = player.getWorld().getName();
+        if (!plugin.getIslandManager().isInIslandWorld(worldName)){
+            player.sendMessage(ChatColor.RED + languageConfig.getNotOnIsland());
+            return;
+        }
+        int islandId = Integer.parseInt(player.getWorld().getName().split("_")[1]);
+        String islandName = plugin.getIslandManager().getIslandNameById(islandId);
+        if (!isIslandExist(islandName)) {
+            player.sendMessage(ChatColor.RED + languageConfig.getNotOnIsland());
+            return;
+        }
+        if (!isIslandOwner(player, islandName)) {
+            player.sendMessage(ChatColor.RED + languageConfig.getDoNotHasPermission());
+            return;
+        }
+        if (isIslandExist(newIslandName)) {
+            player.sendMessage(ChatColor.RED + languageConfig.getIslandNameExistOnCreate());
+            return;
+        }
 
-//        if (!isIslandExist(islandName)) {
-//            player.sendMessage(ChatColor.RED + languageConfig.getNotOnIsland());
-//            return;
-//        }
-//        if (!isIslandOwner(player, islandName)) {
-//            player.sendMessage(ChatColor.RED + languageConfig.getDoNotHasPermission());
-//            return;
-//        }
+        try {
+            IslandEntity islandEntity = islandDAO.queryForId(islandId);
+            islandEntity.setName(newIslandName);
+            islandDAO.update(islandEntity);
+        } catch (SQLException e) {
+            player.sendMessage(ChatColor.RED + languageConfig.getServerError());
+            e.printStackTrace();
+        }
+        player.sendMessage(ChatColor.GOLD + languageConfig.getRenameIslandSuccess());
     }
 }
