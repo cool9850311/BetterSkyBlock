@@ -12,6 +12,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Trust implements TabCompleter, CommandExecutor {
@@ -55,6 +56,12 @@ public class Trust implements TabCompleter, CommandExecutor {
     @Nullable
     @Override
     public List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] strings) {
+        List<String> trustTabComplete = new ArrayList<>();
+        trustTabComplete.add("add");
+        trustTabComplete.add("remove");
+        if (strings.length == 2) {
+            return trustTabComplete;
+        }
         return null;
     }
 }
