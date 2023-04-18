@@ -99,7 +99,7 @@ public class BetterSkyBlock extends JavaPlugin {
         commandManager.registerCommand("create",new CreateIsland());
         commandManager.registerCommand("tp",new TeleportIsland());
         commandManager.registerCommand("tpNormal",new TeleportNormalWorld());
-        commandManager.registerCommand("changeIslandName",new ChangeIslandName());
+        commandManager.registerCommand("rename",new ChangeIslandName());
         commandManager.registerCommand("sethome",new ChangeHome());
         commandManager.registerCommand("trust",new Trust());
     }
