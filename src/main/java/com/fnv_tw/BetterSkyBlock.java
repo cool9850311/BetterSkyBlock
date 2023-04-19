@@ -2,6 +2,7 @@ package com.fnv_tw;
 
 import com.fnv_tw.commands.*;
 import com.fnv_tw.commands.admin.ChangeBorderSize;
+import com.fnv_tw.commands.admin.GetPlayerInfo;
 import com.fnv_tw.commands.admin.UnloadIsland;
 import com.fnv_tw.configs.MainConfig;
 import com.fnv_tw.configs.Language;
@@ -95,6 +96,7 @@ public class BetterSkyBlock extends JavaPlugin {
         // admin commands
         adminCommandManager.registerCommand("changeBorderSize",new ChangeBorderSize());
         adminCommandManager.registerCommand("unloadIsland", new UnloadIsland());
+        adminCommandManager.registerCommand("info", new GetPlayerInfo());
         // general commands
         commandManager.registerCommand("create",new CreateIsland());
         commandManager.registerCommand("tp",new TeleportIsland());
@@ -102,6 +104,7 @@ public class BetterSkyBlock extends JavaPlugin {
         commandManager.registerCommand("rename",new ChangeIslandName());
         commandManager.registerCommand("sethome",new ChangeHome());
         commandManager.registerCommand("trust",new Trust());
+        commandManager.registerCommand("public",new PublicIsland());
     }
     private void registerEvents() {
         getServer().getPluginManager().registerEvents(new PlayerListener(), this);
