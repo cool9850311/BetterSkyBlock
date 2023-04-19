@@ -48,7 +48,6 @@ public class ConfigManager<T> {
         File configFile = new File(configFilePath);
         if (configFile.exists()) {
             try (InputStream inputStream = Files.newInputStream(Paths.get(configFilePath))) {
-                Constructor constructor = new Constructor(defaultConfig.getClass());
                 Representer representer = new Representer();
                 representer.getPropertyUtils().setSkipMissingProperties(true);
                 yaml = new Yaml(new Constructor(defaultConfig.getClass()),representer);
