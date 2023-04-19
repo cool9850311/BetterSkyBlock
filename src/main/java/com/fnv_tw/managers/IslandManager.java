@@ -28,6 +28,7 @@ public class IslandManager {
     private final Language languageConfig;
     private final MainConfig mainConfig;
     private final Set<String> unUsedWorld;
+    private final  String  adminPermission = "betterskyblock.admin";
 
     public IslandManager(){
         plugin = BetterSkyBlock.getInstance();
@@ -44,7 +45,7 @@ public class IslandManager {
             player.sendMessage(ChatColor.RED + languageConfig.getIslandNameNotExistOnTeleport());
             return;
         }
-        if (!isPlayerTrusted(player, islandName) && !isPublicIsland(islandName)) {
+        if (!isPlayerTrusted(player, islandName) && !isPublicIsland(islandName) && !player.hasPermission(adminPermission)) {
             player.sendMessage(ChatColor.RED + languageConfig.getNotInIslandTrustList());
             return;
         }
@@ -67,7 +68,7 @@ public class IslandManager {
             player.sendMessage(ChatColor.RED + languageConfig.getIslandNameExistOnCreate());
             return;
         }
-        if (getPlayerIslandCount(player) >= mainConfig.getIslandLimit()) {
+        if (getPlayerIslandCount(player) >= mainConfig.getIslandLimit() && !player.hasPermission(adminPermission)) {
             player.sendMessage(ChatColor.RED + languageConfig.getIslandLimitReached());
             return;
         }
@@ -203,7 +204,6 @@ public class IslandManager {
         }
         return false;
     }
-    // islandName must exist
     public void addPlayerTrusted(Player operator, String islandName, String addPlayerString) {
         try {
             Player addPlayer = Bukkit.getPlayer(addPlayerString);
@@ -215,7 +215,7 @@ public class IslandManager {
                 operator.sendMessage(ChatColor.RED + languageConfig.getNotOnIsland());
                 return;
             }
-            if (!isIslandOwner(operator, islandName)) {
+            if (!isIslandOwner(operator, islandName) && !operator.hasPermission(adminPermission)) {
                 operator.sendMessage(ChatColor.RED + languageConfig.getDoNotHasPermission());
                 return;
             }
@@ -249,7 +249,7 @@ public class IslandManager {
                 operator.sendMessage(ChatColor.RED + languageConfig.getNotOnIsland());
                 return;
             }
-            if (!isIslandOwner(operator, islandName)) {
+            if (!isIslandOwner(operator, islandName) && !operator.hasPermission(adminPermission)) {
                 operator.sendMessage(ChatColor.RED + languageConfig.getDoNotHasPermission());
                 return;
             }

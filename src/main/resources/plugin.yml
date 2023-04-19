@@ -15,5 +15,7 @@ permissions:
     default: op
     children:
       betterskyblock.usage: true
+  betterskyblock.admin:
+    description: "Admin Permission"
   betterskyblock.usage:
     description: "Permission to use /is"
