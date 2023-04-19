@@ -1,6 +1,8 @@
 package com.fnv_tw.managers;
 
 import com.fnv_tw.BetterSkyBlock;
+import com.fnv_tw.configs.Language;
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -50,6 +52,8 @@ public class CommandManager implements TabCompleter, CommandExecutor {
     }
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+        BetterSkyBlock plugin = BetterSkyBlock.getInstance();
+        Language languageConfig = plugin.getLanguageConfigManager().getConfig();
         if (args.length == 0) {
             // TODO: Main GUI
             return false;
@@ -57,9 +61,9 @@ public class CommandManager implements TabCompleter, CommandExecutor {
         CommandExecutor executor = commands.get(args[0]);
         if (executor != null) {
             return executor.onCommand(sender, command, label, args);
-        } else {
-            return false;
         }
+        sender.sendMessage(ChatColor.RED + languageConfig.getWrongCommand());
+        return false;
     }
 
 }
