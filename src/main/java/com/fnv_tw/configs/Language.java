@@ -25,6 +25,6 @@ public class Language {
     private String renameIslandSuccess = "Rename island successfully.";
     private String islandBanSuccess = "Ban island successfully.";
     private String islandUnbanSuccess = "Unban island successfully.";
-    private String islandIsBanedWarning = "This island is getting baned.";
+    private String islandIsBanedWarning = "This island is baned.";
     private String teleportUnsafe = "Teleport spot is unsafe. Use the unsafe suffix if you still want to teleport.";
 }
