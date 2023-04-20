@@ -128,8 +128,30 @@ public class IslandManager {
         }
         return true;
     }
-    public void unloadIsland(String worldName) {
-        Bukkit.unloadWorld(worldName, true);
+    public void unloadIsland(CommandSender commandSender, String islandName) {
+        if (!(commandSender instanceof ConsoleCommandSender) && !commandSender.hasPermission("betterskyblock.admin")) {
+            commandSender.sendMessage(ChatColor.RED + languageConfig.getDoNotHasPermission());
+            return;
+        }
+        if (!isIslandExist(islandName)) {
+            commandSender.sendMessage(ChatColor.RED + languageConfig.getIslandNameNotExist());
+            return;
+        }
+        try {
+            int islandId = getIslandId(islandName);
+            IslandEntity islandEntity = islandDAO.queryForId(islandId);
+            String worldName = islandEntity.getOwnerUuid() + "_" + islandId;
+            World world = Bukkit.getWorld(worldName);
+            for (Player player:world.getPlayers()) {
+                player.performCommand("is tpNormal");
+            }
+            Bukkit.unloadWorld(worldName, true);
+            commandSender.sendMessage(ChatColor.GOLD + languageConfig.getUnloadIslandSuccess());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
         // Bukkit.getLogger().info("unload world:" + worldName);
     }
     public int getPlayerIslandCount(Player player) {
@@ -187,9 +209,9 @@ public class IslandManager {
             }
             if (world.getPlayers().size() == 0) {
                 if (unUsedWorld.contains(worldName)){
-                     unloadIsland(world.getName());
-                     unUsedWorld.remove(worldName);
-                     continue;
+                    Bukkit.unloadWorld(world.getName(), true);
+                    unUsedWorld.remove(worldName);
+                    continue;
                 }
                 unUsedWorld.add(worldName);
             }
