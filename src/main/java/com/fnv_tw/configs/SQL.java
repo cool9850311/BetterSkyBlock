@@ -25,7 +25,10 @@ public class SQL {
         if (Driver.SQLITE.toString().equals(driver)) {
             return Driver.SQLITE;
         }
-        return Driver.MYSQL;
+        if (Driver.MYSQL.toString().equals(driver)) {
+            return Driver.MYSQL;
+        }
+        return null;
     }
 
 }
