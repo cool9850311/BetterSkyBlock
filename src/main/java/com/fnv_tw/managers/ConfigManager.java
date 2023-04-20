@@ -32,14 +32,14 @@ public class ConfigManager<T> {
     public T getConfig() {
         return configObject;
     }
-    public void saveConfig(T defaultConfig) {
+    public void saveConfig(T configObject) {
         try {
             DumperOptions options = new DumperOptions();
             options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
             yaml = new Yaml(options);
             FileWriter writer = new FileWriter(configFilePath);
             ObjectToLinkedHashMapConverter<T> converter = new ObjectToLinkedHashMapConverter<>();
-            LinkedHashMap<String, Object> map = converter.toLinkedHashMap(defaultConfig);
+            LinkedHashMap<String, Object> map = converter.toLinkedHashMap(configObject);
             yaml.dump(map, writer);
             writer.close();
         } catch (IOException | IllegalAccessException e) {
@@ -55,7 +55,7 @@ public class ConfigManager<T> {
                 representer.getPropertyUtils().setSkipMissingProperties(true);
                 yaml = new Yaml(new Constructor(defaultConfig.getClass()),representer);
                 configObject = yaml.load(inputStream);
-                saveConfig(defaultConfig);
+                saveConfig(configObject);
             } catch (IOException e) {
                 e.printStackTrace();
             }
