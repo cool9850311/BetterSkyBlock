@@ -105,6 +105,7 @@ public class BetterSkyBlock extends JavaPlugin {
         commandManager.registerCommand("sethome",new ChangeHome());
         commandManager.registerCommand("trust",new Trust());
         commandManager.registerCommand("public",new PublicIsland());
+        commandManager.registerCommand("help",new Help());
     }
     private void registerEvents() {
         getServer().getPluginManager().registerEvents(new PlayerListener(), this);
