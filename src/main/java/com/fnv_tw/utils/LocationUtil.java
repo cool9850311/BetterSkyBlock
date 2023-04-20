@@ -26,7 +26,6 @@ public class LocationUtil {
 
     public static Location getSafeLocation(Location location) {
         World world = location.getWorld();
-        if (world == null) return location;
 
         Location highest = getHighestLocation(location.getBlockX(), location.getBlockZ(), world);
         if (isSafe(highest)) return highest;
@@ -35,11 +34,11 @@ public class LocationUtil {
         Location pos2 = new Location(world, 50, 0, 50);
         for (int x = pos1.getBlockX(); x <= pos2.getBlockX(); x++) {
             for (int z = pos1.getBlockZ(); z <= pos2.getBlockZ(); z++) {
-                Location newLocation = getHighestLocation(x, z, world);
+                Location newLocation = getHighestLocation(x + location.getBlockX(), z + location.getBlockZ(), world);
                 if (isSafe(newLocation)) return newLocation;
             }
         }
-        return location;
+        return null;
     }
 
     /**
@@ -67,7 +66,9 @@ public class LocationUtil {
      * @return The lowest AIR location.
      */
     public static int getMinHeight(World world) {
-        int version = Integer.parseInt(Bukkit.getVersion().split("-")[0].split("\\.")[1]);
-        return version >= 17 ? world.getMinHeight() : 0;  // World#getMinHeight() -> Available only in 1.17 Spigot and 1.16.5 PaperMC
+//        String packageName = Bukkit.getServer().getClass().getPackage().getName();
+//        Bukkit.getLogger().info("Version:" +packageName);
+//        int version = Integer.parseInt(packageName.substring(packageName.lastIndexOf('.') + 1));
+        return world.getMinHeight();  // World#getMinHeight() -> Available only in 1.17 Spigot and 1.16.5 PaperMC
     }
 }

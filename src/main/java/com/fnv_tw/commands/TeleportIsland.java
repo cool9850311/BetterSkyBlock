@@ -11,6 +11,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Collections;
 import java.util.List;
 
 public class TeleportIsland implements TabCompleter, CommandExecutor {
@@ -26,12 +27,20 @@ public class TeleportIsland implements TabCompleter, CommandExecutor {
             commandSender.sendMessage(ChatColor.RED + languageConfig.getDoNotHasPermission());
             return false;
         }
-        if(strings.length != 2){
+        if(strings.length != 2 && strings.length != 3){
             commandSender.sendMessage(ChatColor.RED + languageConfig.getWrongCommand());
             return false;
         }
+        boolean unsafe = false;
+        if (strings.length == 3 && !strings[2].equals("unsafe") ) {
+            commandSender.sendMessage(ChatColor.GOLD + languageConfig.getWrongCommand());
+            return false;
+        }
+        if (strings.length == 3) {
+            unsafe = true;
+        }
         commandSender.sendMessage(ChatColor.GOLD + languageConfig.getLoadIslandPleaseWait());
-        plugin.getIslandManager().teleportToIsland(((Player) commandSender).getPlayer(), strings[1]);
+        plugin.getIslandManager().teleportToIsland(((Player) commandSender).getPlayer(), strings[1], unsafe);
         return true;
     }
 
@@ -42,6 +51,10 @@ public class TeleportIsland implements TabCompleter, CommandExecutor {
         if (strings.length == 2) {
             BetterSkyBlock plugin = BetterSkyBlock.getInstance();
             return plugin.getIslandManager().getTrustedIslandName((Player) commandSender);
+        }
+        if (strings.length == 3) {
+            BetterSkyBlock plugin = BetterSkyBlock.getInstance();
+            return Collections.singletonList("unsafe");
         }
         return null;
     }

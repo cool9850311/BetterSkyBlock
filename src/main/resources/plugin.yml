@@ -1,7 +1,7 @@
 name: BetterSkyBlock
 main: com.fnv_tw.BetterSkyBlock
 version: 0.0.1
-api-version: '1.13'
+api-version: '1.17'
 commands:
   BetterSkyBlockIsland:
     description: "Main command of BetterSkyBlock"

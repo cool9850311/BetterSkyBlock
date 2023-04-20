@@ -4,9 +4,13 @@ import com.fnv_tw.BetterSkyBlock;
 import com.fnv_tw.configs.Language;
 import com.fnv_tw.configs.MainConfig;
 import com.fnv_tw.managers.IslandManager;
+import com.fnv_tw.utils.LocationUtil;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.World;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
 public class PlayerListener implements Listener {
@@ -34,5 +38,22 @@ public class PlayerListener implements Listener {
             e.getPlayer().sendMessage(ChatColor.RED + languageConfig.getNotInIslandTrustList());
             e.setCancelled(true);
         }
+    }
+    @EventHandler
+    public void onPlayerMove(PlayerMoveEvent e) {
+        if (!mainConfig.isVoidTeleport()) {
+            return;
+        }
+        World world = e.getPlayer().getWorld();
+        if (!islandManager.isInIslandWorld(world.getName())) {
+            return;
+        }
+        if (e.getPlayer().getLocation().getY() > LocationUtil.getMinHeight(e.getPlayer().getWorld())){
+            return;
+        }
+        int islandId = Integer.parseInt(world.getName().split("_")[1]);
+        String islandName = plugin.getIslandManager().getIslandNameById(islandId);
+        islandManager.teleportToIsland(e.getPlayer(), islandName, false);
+
     }
 }

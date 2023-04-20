@@ -55,7 +55,7 @@ public class CommandManager implements TabCompleter, CommandExecutor {
         BetterSkyBlock plugin = BetterSkyBlock.getInstance();
         Language languageConfig = plugin.getLanguageConfigManager().getConfig();
         if (args.length == 0) {
-            // TODO: Main GUI
+            sender.sendMessage(ChatColor.RED + languageConfig.getWrongCommand());
             return false;
         }
         CommandExecutor executor = commands.get(args[0]);
