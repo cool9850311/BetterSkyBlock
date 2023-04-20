@@ -3,8 +3,8 @@ package com.fnv_tw.managers;
 import com.fnv_tw.BetterSkyBlock;
 import com.fnv_tw.configs.Language;
 import com.fnv_tw.configs.MainConfig;
-import com.fnv_tw.database.BorderDAO;
-import com.fnv_tw.database.Entity.BorderEntity;
+import com.fnv_tw.database.PlayerDataDAO;
+import com.fnv_tw.database.Entity.PlayerDataEntity;
 import com.fnv_tw.database.Entity.IslandEntity;
 import com.fnv_tw.database.Entity.IslandTrustEntity;
 import com.fnv_tw.database.IslandDAO;
@@ -18,12 +18,11 @@ import org.bukkit.util.Vector;
 
 import java.sql.SQLException;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class IslandManager {
     private final IslandDAO islandDAO;
     private final IslandTrustDAO islandTrustDAO;
-    private final BorderDAO borderDAO;
+    private final PlayerDataDAO playerDataDAO;
     private BetterSkyBlock plugin;
     private final Language languageConfig;
     private final MainConfig mainConfig;
@@ -37,7 +36,7 @@ public class IslandManager {
         unUsedWorld = new HashSet<>();
         islandDAO = IslandDAO.getInstance(BetterSkyBlock.getInstance().getDataBaseManager().getConnectionSource(), IslandEntity.class);
         islandTrustDAO = IslandTrustDAO.getInstance(BetterSkyBlock.getInstance().getDataBaseManager().getConnectionSource(), IslandTrustEntity.class);
-        borderDAO = BorderDAO.getInstance(BetterSkyBlock.getInstance().getDataBaseManager().getConnectionSource(), BorderEntity.class);
+        playerDataDAO = PlayerDataDAO.getInstance(BetterSkyBlock.getInstance().getDataBaseManager().getConnectionSource(), PlayerDataEntity.class);
     }
     // TODO:BungeeCord
     public void teleportToIsland(Player player, String islandName){
@@ -137,9 +136,9 @@ public class IslandManager {
     }
     private int getPlayerBorderSize(UUID playerUUID) {
         try {
-            Optional<BorderEntity> borderEntity = borderDAO.queryForEq("player_uuid", playerUUID).stream().findFirst();
-            if (borderEntity.isPresent()) {
-                return borderEntity.get().getBorderSize();
+            Optional<PlayerDataEntity> playerDataEntity = playerDataDAO.queryForEq("player_uuid", playerUUID).stream().findFirst();
+            if (playerDataEntity.isPresent()) {
+                return playerDataEntity.get().getBorderSize();
             }
         } catch (SQLException e) {
             e.printStackTrace();

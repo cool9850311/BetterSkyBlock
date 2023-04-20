@@ -34,6 +34,8 @@ public class IslandEntity {
     private String description;
     @DatabaseField
     private String home;
+    @DatabaseField
+    private boolean ban;
     @DatabaseField(columnName = "create_time",dataType = DataType.DATE_STRING, format = "yyyy-MM-dd HH:mm:ss")
     private Date createTime;
     @DatabaseField(columnName = "modify_time",dataType = DataType.DATE_STRING, version = true, format = "yyyy-MM-dd HH:mm:ss")

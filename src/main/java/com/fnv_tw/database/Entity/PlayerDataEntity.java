@@ -11,8 +11,8 @@ import java.util.UUID;
 
 @Data
 @AllArgsConstructor
-@DatabaseTable(tableName = "player_border")
-public class BorderEntity {
+@DatabaseTable(tableName = "player_data")
+public class PlayerDataEntity {
     @DatabaseField(generatedId = true)
     private int id;
     @DatabaseField(columnName = "player_uuid", unique = true)
@@ -23,7 +23,7 @@ public class BorderEntity {
     private Date createTime;
     @DatabaseField(columnName = "modify_time",dataType = DataType.DATE_STRING, version = true, format = "yyyy-MM-dd HH:mm:ss")
     private Date modifyTime;
-    public BorderEntity() {
+    public PlayerDataEntity() {
         this.createTime = new Date();
     }
 }

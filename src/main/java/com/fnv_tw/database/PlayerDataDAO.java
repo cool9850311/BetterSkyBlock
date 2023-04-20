@@ -1,25 +1,24 @@
 package com.fnv_tw.database;
 
-import com.fnv_tw.database.Entity.BorderEntity;
-import com.fnv_tw.database.Entity.IslandEntity;
+import com.fnv_tw.database.Entity.PlayerDataEntity;
 import com.j256.ormlite.dao.BaseDaoImpl;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 
 import java.sql.SQLException;
 
-public class BorderDAO extends BaseDaoImpl<BorderEntity, Integer> {
-    private static BorderDAO instance;
+public class PlayerDataDAO extends BaseDaoImpl<PlayerDataEntity, Integer> {
+    private static PlayerDataDAO instance;
 
-    private BorderDAO(ConnectionSource connectionSource, Class<BorderEntity> dataClass) throws SQLException {
+    private PlayerDataDAO(ConnectionSource connectionSource, Class<PlayerDataEntity> dataClass) throws SQLException {
         super(connectionSource, dataClass);
         TableUtils.createTableIfNotExists(connectionSource, dataClass);
     }
     // Singleton
-    public static synchronized BorderDAO getInstance(ConnectionSource connectionSource, Class<BorderEntity> dataClass) {
+    public static synchronized PlayerDataDAO getInstance(ConnectionSource connectionSource, Class<PlayerDataEntity> dataClass) {
         if (instance == null) {
             try {
-                instance = new BorderDAO(connectionSource, dataClass);
+                instance = new PlayerDataDAO(connectionSource, dataClass);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
