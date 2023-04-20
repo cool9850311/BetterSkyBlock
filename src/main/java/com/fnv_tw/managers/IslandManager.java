@@ -458,7 +458,37 @@ public class IslandManager {
         }
         return false;
     }
-    public void setPublicIsland(Player player, String islandName) {
+    public void setPublicIsland(Player player) {
+        String worldName = player.getWorld().getName();
+        if (!plugin.getIslandManager().isInIslandWorld(worldName)){
+            player.sendMessage(ChatColor.RED + languageConfig.getNotOnIsland());
+            return;
+        }
+        int islandId = Integer.parseInt(player.getWorld().getName().split("_")[1]);
+        String islandName = plugin.getIslandManager().getIslandNameById(islandId);
+        if (!isIslandExist(islandName)) {
+            player.sendMessage(ChatColor.RED + languageConfig.getNotOnIsland());
+            return;
+        }
+        if (!isIslandOwner(player, islandName)) {
+            player.sendMessage(ChatColor.RED + languageConfig.getDoNotHasPermission());
+            return;
+        }
+        try {
+            IslandEntity islandEntity = islandDAO.queryForId(islandId);
+            if (islandEntity.isPublicIsland()){
+                islandEntity.setPublicIsland(false);
+                islandDAO.update(islandEntity);
+                player.sendMessage(ChatColor.GOLD + languageConfig.getIslandNowPrivate());
+                return;
+            }
+            islandEntity.setPublicIsland(true);
+            islandDAO.update(islandEntity);
+            player.sendMessage(ChatColor.GOLD + languageConfig.getIslandNowPublic());
 
+        } catch (SQLException e) {
+            player.sendMessage(ChatColor.RED + languageConfig.getServerError());
+            e.printStackTrace();
+        }
     }
 }

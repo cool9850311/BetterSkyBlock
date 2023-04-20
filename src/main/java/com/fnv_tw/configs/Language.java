@@ -28,4 +28,6 @@ public class Language {
     private String islandIsBanedWarning = "This island is baned.";
     private String teleportUnsafe = "Teleport spot is unsafe. Use the unsafe suffix if you still want to teleport.";
     private String unloadIslandSuccess = "Unload island successfully.";
+    private String islandNowPublic = "The island is now public.";
+    private String islandNowPrivate = "The island is now private.";
 }
