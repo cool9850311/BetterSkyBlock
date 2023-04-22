@@ -29,10 +29,6 @@ public class Trust implements TabCompleter, CommandExecutor {
             commandSender.sendMessage(ChatColor.RED + languageConfig.getDoNotHasPermission());
             return false;
         }
-        if(strings.length != 3){
-            commandSender.sendMessage(ChatColor.RED + languageConfig.getWrongCommand());
-            return false;
-        }
         String worldName = ((Player) commandSender).getWorld().getName();
         if (!plugin.getIslandManager().isInIslandWorld(worldName)){
             commandSender.sendMessage(ChatColor.RED + languageConfig.getNotOnIsland());
@@ -40,12 +36,16 @@ public class Trust implements TabCompleter, CommandExecutor {
         }
         int islandId = Integer.parseInt(((Player) commandSender).getWorld().getName().split("_")[1]);
         String islandName = plugin.getIslandManager().getIslandNameById(islandId);
-        if (strings[1].equals("add")) {
+        if (strings[1].equals("add") && strings.length == 3) {
             plugin.getIslandManager().addPlayerTrusted(((Player) commandSender), islandName, strings[2]);
             return true;
         }
-        if (strings[1].equals("remove")) {
+        if (strings[1].equals("remove") && strings.length == 3) {
             plugin.getIslandManager().removePlayerTrusted(((Player) commandSender), islandName, strings[2]);
+            return true;
+        }
+        if (strings[1].equals("list") && strings.length == 2) {
+            plugin.getIslandManager().getIslandTrustList(((Player) commandSender), islandName);
             return true;
         }
         commandSender.sendMessage(ChatColor.RED + languageConfig.getWrongCommand());
@@ -58,6 +58,7 @@ public class Trust implements TabCompleter, CommandExecutor {
         List<String> trustTabComplete = new ArrayList<>();
         trustTabComplete.add("add");
         trustTabComplete.add("remove");
+        trustTabComplete.add("list");
         if (strings.length == 2) {
             return trustTabComplete;
         }

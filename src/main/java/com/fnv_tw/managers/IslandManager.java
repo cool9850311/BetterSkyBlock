@@ -491,4 +491,35 @@ public class IslandManager {
             e.printStackTrace();
         }
     }
+
+    public List<String> getIslandTrustList (String islandName){
+        try {
+            int islandId = getIslandId(islandName);
+            return islandTrustDAO.queryForEq("island_id", islandId).stream()
+                    .map(IslandTrustEntity::getPlayerUuid)
+                    .map(uuid -> {
+                        OfflinePlayer player = Bukkit.getOfflinePlayer(uuid);
+                        return player.getName() != null ? player.getName() : null;
+                    })
+                    .filter(Objects::nonNull)
+                    .toList();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+    public void getIslandTrustList (Player player, String islandName){
+        if (!isIslandExist(islandName)) {
+            player.sendMessage(ChatColor.RED + languageConfig.getNotOnIsland());
+            return;
+        }
+        if (!isIslandOwner(player, islandName) && !player.hasPermission(adminPermission)) {
+            player.sendMessage(ChatColor.RED + languageConfig.getDoNotHasPermission());
+            return;
+        }
+        String result = String.join(", ", getIslandTrustList(islandName));
+        player.sendMessage(ChatColor.GOLD + result);
+
+    }
+
 }
