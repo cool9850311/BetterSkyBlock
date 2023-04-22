@@ -517,7 +517,7 @@ public class IslandManager {
             player.sendMessage(ChatColor.RED + languageConfig.getDoNotHasPermission());
             return;
         }
-        String result = String.join(", ", getIslandTrustList(islandName));
+        String result = languageConfig.getTrustList() + String.join(", ", getIslandTrustList(islandName));
         player.sendMessage(ChatColor.GOLD + result);
 
     }
