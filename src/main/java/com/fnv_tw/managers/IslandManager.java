@@ -12,20 +12,21 @@ import com.fnv_tw.database.IslandTrustDAO;
 import com.fnv_tw.utils.LocationUtil;
 import com.j256.ormlite.dao.GenericRawResults;
 import com.j256.ormlite.stmt.DeleteBuilder;
+import com.j256.ormlite.support.ConnectionSource;
 import org.bukkit.*;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.*;
 
 public class IslandManager {
+    private final BetterSkyBlock plugin;
     private final IslandDAO islandDAO;
     private final IslandTrustDAO islandTrustDAO;
-    private final PlayerDataDAO playerDataDAO;
-    private BetterSkyBlock plugin;
     private final Language languageConfig;
     private final MainConfig mainConfig;
     private final Set<String> unUsedWorld;
@@ -36,9 +37,9 @@ public class IslandManager {
         languageConfig = plugin.getLanguageConfigManager().getConfig();
         mainConfig = plugin.getMainConfigConfigManager().getConfig();
         unUsedWorld = new HashSet<>();
-        islandDAO = IslandDAO.getInstance(BetterSkyBlock.getInstance().getDataBaseManager().getConnectionSource(), IslandEntity.class);
-        islandTrustDAO = IslandTrustDAO.getInstance(BetterSkyBlock.getInstance().getDataBaseManager().getConnectionSource(), IslandTrustEntity.class);
-        playerDataDAO = PlayerDataDAO.getInstance(BetterSkyBlock.getInstance().getDataBaseManager().getConnectionSource(), PlayerDataEntity.class);
+        ConnectionSource connectionSource = BetterSkyBlock.getInstance().getDataBaseManager().getConnectionSource();
+        islandDAO = IslandDAO.getInstance(connectionSource, IslandEntity.class);
+        islandTrustDAO = IslandTrustDAO.getInstance(connectionSource, IslandTrustEntity.class);
     }
     // TODO:BungeeCord
     public void teleportToIsland(Player player, String islandName, boolean unsafe){
@@ -180,17 +181,6 @@ public class IslandManager {
         }
         throw new Exception("Can not found Island id with" + islandName);
     }
-    private int getPlayerBorderSize(UUID playerUUID) {
-        try {
-            Optional<PlayerDataEntity> playerDataEntity = playerDataDAO.queryForEq("player_uuid", playerUUID).stream().findFirst();
-            if (playerDataEntity.isPresent()) {
-                return playerDataEntity.get().getBorderSize();
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return mainConfig.getDefaultBorderSize();
-    }
 
     private void initIsland(World world) {
         Location loc = new Location(world,0,0,0);
@@ -198,7 +188,12 @@ public class IslandManager {
             loc.getBlock().setType(Material.BEDROCK);
         }
         UUID playerUUID = UUID.fromString(world.getName().split("_")[0]);
-        world.getWorldBorder().setSize(getPlayerBorderSize(playerUUID));
+        PlayerDataManager playerDataManager = plugin.getPlayerDataManager();
+        try {
+            world.getWorldBorder().setSize(playerDataManager.getPlayerBorderSize(playerUUID));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
     public void unloadUnusedWorldTask() {
         List<World> worlds = Bukkit.getWorlds();
@@ -362,12 +357,12 @@ public class IslandManager {
     }
     public void changeIslandHome(Player player) {
         String worldName = player.getWorld().getName();
-        if (!plugin.getIslandManager().isInIslandWorld(worldName)){
+        if (!isInIslandWorld(worldName)){
             player.sendMessage(ChatColor.RED + languageConfig.getNotOnIsland());
             return;
         }
         int islandId = Integer.parseInt(player.getWorld().getName().split("_")[1]);
-        String islandName = plugin.getIslandManager().getIslandNameById(islandId);
+        String islandName = getIslandNameById(islandId);
         if (!isIslandExist(islandName)) {
             player.sendMessage(ChatColor.RED + languageConfig.getNotOnIsland());
             return;
@@ -388,12 +383,12 @@ public class IslandManager {
     }
     public void changeIslandName(Player player, String newIslandName) {
         String worldName = player.getWorld().getName();
-        if (!plugin.getIslandManager().isInIslandWorld(worldName)){
+        if (!isInIslandWorld(worldName)){
             player.sendMessage(ChatColor.RED + languageConfig.getNotOnIsland());
             return;
         }
         int islandId = Integer.parseInt(player.getWorld().getName().split("_")[1]);
-        String islandName = plugin.getIslandManager().getIslandNameById(islandId);
+        String islandName = getIslandNameById(islandId);
         if (!isIslandExist(islandName)) {
             player.sendMessage(ChatColor.RED + languageConfig.getNotOnIsland());
             return;
@@ -460,12 +455,12 @@ public class IslandManager {
     }
     public void setPublicIsland(Player player) {
         String worldName = player.getWorld().getName();
-        if (!plugin.getIslandManager().isInIslandWorld(worldName)){
+        if (!isInIslandWorld(worldName)){
             player.sendMessage(ChatColor.RED + languageConfig.getNotOnIsland());
             return;
         }
         int islandId = Integer.parseInt(player.getWorld().getName().split("_")[1]);
-        String islandName = plugin.getIslandManager().getIslandNameById(islandId);
+        String islandName = getIslandNameById(islandId);
         if (!isIslandExist(islandName)) {
             player.sendMessage(ChatColor.RED + languageConfig.getNotOnIsland());
             return;
@@ -499,7 +494,7 @@ public class IslandManager {
                     .map(IslandTrustEntity::getPlayerUuid)
                     .map(uuid -> {
                         OfflinePlayer player = Bukkit.getOfflinePlayer(uuid);
-                        return player.getName() != null ? player.getName() : null;
+                        return player.getName() != null ? player.getName() : uuid.toString();
                     })
                     .filter(Objects::nonNull)
                     .toList();

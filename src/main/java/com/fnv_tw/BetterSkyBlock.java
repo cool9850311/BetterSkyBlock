@@ -10,10 +10,7 @@ import com.fnv_tw.configs.Language;
 import com.fnv_tw.configs.SQL;
 import com.fnv_tw.generator.VoidGenerator;
 import com.fnv_tw.listeners.PlayerListener;
-import com.fnv_tw.managers.CommandManager;
-import com.fnv_tw.managers.ConfigManager;
-import com.fnv_tw.managers.DataBaseManager;
-import com.fnv_tw.managers.IslandManager;
+import com.fnv_tw.managers.*;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.generator.ChunkGenerator;
@@ -26,6 +23,7 @@ public class BetterSkyBlock extends JavaPlugin {
     private ChunkGenerator chunkGenerator;
     private DataBaseManager dataBaseManager;
     private IslandManager islandManager;
+    private PlayerDataManager playerDataManager;
     private CommandManager commandManager;
     private CommandManager adminCommandManager;
 
@@ -57,7 +55,9 @@ public class BetterSkyBlock extends JavaPlugin {
             Bukkit.getPluginManager().disablePlugin(this);
             return;
         }
+        playerDataManager = new PlayerDataManager();
         islandManager = new IslandManager();
+
         registerEvents();
         // 30s
         Bukkit.getScheduler().scheduleSyncRepeatingTask(this, () -> islandManager.unloadUnusedWorldTask(), 0L, 600L);
@@ -95,7 +95,7 @@ public class BetterSkyBlock extends JavaPlugin {
     }
     private void registerCommands() {
         // admin commands
-        adminCommandManager.registerCommand("changeBorderSize",new ChangeBorderSize());
+        adminCommandManager.registerCommand("border",new ChangeBorderSize());
         adminCommandManager.registerCommand("unloadIsland", new UnloadIsland());
         adminCommandManager.registerCommand("info", new GetPlayerInfo());
         adminCommandManager.registerCommand("ban", new BanIsland());

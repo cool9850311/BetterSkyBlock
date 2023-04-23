@@ -31,4 +31,6 @@ public class Language {
     private String islandNowPublic = "The island is now public.";
     private String islandNowPrivate = "The island is now private.";
     private String trustList = "Trust List:";
+    private String addPlayerBorderSizeSuccess = "Add Player Border Size Successfully.";
+    private String setPlayerBorderSizeSuccess = "Set Player Border Size Successfully.";
 }
