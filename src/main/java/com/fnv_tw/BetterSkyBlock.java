@@ -1,10 +1,7 @@
 package com.fnv_tw;
 
 import com.fnv_tw.commands.*;
-import com.fnv_tw.commands.admin.BanIsland;
-import com.fnv_tw.commands.admin.ChangeBorderSize;
-import com.fnv_tw.commands.admin.GetPlayerInfo;
-import com.fnv_tw.commands.admin.UnloadIsland;
+import com.fnv_tw.commands.admin.*;
 import com.fnv_tw.configs.MainConfig;
 import com.fnv_tw.configs.Language;
 import com.fnv_tw.configs.SQL;
@@ -96,6 +93,7 @@ public class BetterSkyBlock extends JavaPlugin {
     private void registerCommands() {
         // admin commands
         adminCommandManager.registerCommand("border",new ChangeBorderSize());
+        adminCommandManager.registerCommand("islandLimit",new ChangeIslandNumberLimit());
         adminCommandManager.registerCommand("unloadIsland", new UnloadIsland());
         adminCommandManager.registerCommand("info", new GetPlayerInfo());
         adminCommandManager.registerCommand("ban", new BanIsland());

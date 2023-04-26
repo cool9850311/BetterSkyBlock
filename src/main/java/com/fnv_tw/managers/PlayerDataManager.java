@@ -29,6 +29,60 @@ public class PlayerDataManager implements IslandPlayerData {
         playerDataDAO = PlayerDataDAO.getInstance(connectionSource, PlayerDataEntity.class);
     }
     // api
+    public int getPlayerIslandLimit(UUID playerUUID) throws Exception {
+        try {
+            Optional<PlayerDataEntity> playerDataEntity = playerDataDAO.queryForEq("player_uuid", playerUUID).stream().findFirst();
+            if (playerDataEntity.isPresent()) {
+                return playerDataEntity.get().getIslandNumberLimit();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new Exception("DATABASE ERROR");
+        }
+        return mainConfig.getIslandLimit();
+    }
+    //api
+    public boolean addPlayerIslandLimit(UUID playerUUID, int addIslandLimit) throws Exception{
+        try {
+            int currentPlayerIslandLimit = getPlayerIslandLimit(playerUUID);
+            int playerDataId = getPlayerDataIDByUUID(playerUUID);
+            if (playerDataId == -1) {
+                PlayerDataEntity playerDataEntity = new PlayerDataEntity();
+                playerDataEntity.setPlayerUuid(playerUUID);
+                playerDataEntity.setIslandNumberLimit(currentPlayerIslandLimit + addIslandLimit);
+                playerDataDAO.create(playerDataEntity);
+                return true;
+            }
+            PlayerDataEntity playerDataEntity = playerDataDAO.queryForId(playerDataId);
+            playerDataEntity.setIslandNumberLimit(currentPlayerIslandLimit + addIslandLimit);
+            playerDataDAO.update(playerDataEntity);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new Exception("DATABASE ERROR");
+        }
+        return true;
+    }
+    //api
+    public boolean setPlayerIslandLimit(UUID playerUUID, int setIslandLimit) throws Exception{
+        try {
+            int playerDataId = getPlayerDataIDByUUID(playerUUID);
+            if (playerDataId == -1) {
+                PlayerDataEntity playerDataEntity = new PlayerDataEntity();
+                playerDataEntity.setPlayerUuid(playerUUID);
+                playerDataEntity.setIslandNumberLimit(setIslandLimit);
+                playerDataDAO.create(playerDataEntity);
+                return true;
+            }
+            PlayerDataEntity playerDataEntity = playerDataDAO.queryForId(playerDataId);
+            playerDataEntity.setIslandNumberLimit(setIslandLimit);
+            playerDataDAO.update(playerDataEntity);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new Exception("DATABASE ERROR");
+        }
+        return true;
+    }
+    // api
     public int getPlayerBorderSize(UUID playerUUID) throws Exception {
         try {
             Optional<PlayerDataEntity> playerDataEntity = playerDataDAO.queryForEq("player_uuid", playerUUID).stream().findFirst();
@@ -135,4 +189,54 @@ public class PlayerDataManager implements IslandPlayerData {
         }
 
     }
+
+    public void setPlayerIslandLimit(CommandSender commandSender, String playerName, int setIslandLimit) {
+        if (!(commandSender instanceof ConsoleCommandSender) && !commandSender.hasPermission("betterskyblock.admin")) {
+            commandSender.sendMessage(ChatColor.RED + languageConfig.getDoNotHasPermission());
+            return;
+        }
+        try {
+            UUID playerUUID = PlayerUUIDUtil.getPlayerUUID(playerName);
+            setPlayerIslandLimit(playerUUID, setIslandLimit);
+        } catch (Exception e) {
+            e.printStackTrace();
+            commandSender.sendMessage(ChatColor.RED + languageConfig.getServerError());
+            return;
+        }
+        commandSender.sendMessage(ChatColor.GOLD + languageConfig.getSetPlayerIslandLimitSuccess());
+
+    }
+    public void getPlayerIslandLimit(CommandSender commandSender, String playerName) {
+        if (!(commandSender instanceof ConsoleCommandSender) && !commandSender.hasPermission("betterskyblock.admin")) {
+            commandSender.sendMessage(ChatColor.RED + languageConfig.getDoNotHasPermission());
+            return;
+        }
+        try {
+            UUID playerUUID = PlayerUUIDUtil.getPlayerUUID(playerName);
+            int playerIslandLimit = getPlayerIslandLimit(playerUUID);
+            commandSender.sendMessage(ChatColor.GOLD + "The Island Limit of " + playerName + " is: " + playerIslandLimit);
+        } catch (Exception e) {
+            e.printStackTrace();
+            commandSender.sendMessage(ChatColor.RED + languageConfig.getServerError());
+        }
+
+    }
+
+    public void addPlayerIslandLimit(CommandSender commandSender, String playerName, int addIslandLimit) {
+        if (!(commandSender instanceof ConsoleCommandSender) && !commandSender.hasPermission("betterskyblock.admin")) {
+            commandSender.sendMessage(ChatColor.RED + languageConfig.getDoNotHasPermission());
+            return;
+        }
+        try {
+            UUID playerUUID = PlayerUUIDUtil.getPlayerUUID(playerName);
+            addPlayerIslandLimit(playerUUID, addIslandLimit);
+        } catch (Exception e) {
+            e.printStackTrace();
+            commandSender.sendMessage(ChatColor.RED + languageConfig.getServerError());
+            return;
+        }
+        commandSender.sendMessage(ChatColor.GOLD + languageConfig.getAddPlayerIslandLimitSuccess());
+
+    }
+
 }

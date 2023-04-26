@@ -33,4 +33,6 @@ public class Language {
     private String trustList = "Trust List:";
     private String addPlayerBorderSizeSuccess = "Add Player Border Size Successfully.";
     private String setPlayerBorderSizeSuccess = "Set Player Border Size Successfully.";
+    private String addPlayerIslandLimitSuccess = "Add Player Island Limit Successfully.";
+    private String setPlayerIslandLimitSuccess = "Set Player Island Limit Successfully.";
 }

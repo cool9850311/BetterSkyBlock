@@ -93,19 +93,21 @@ public class IslandManager {
             player.sendMessage(ChatColor.RED + languageConfig.getIslandNameAlreadyExist());
             return;
         }
-        if (getPlayerIslandCount(player) >= mainConfig.getIslandLimit() && !player.hasPermission(adminPermission)) {
-            player.sendMessage(ChatColor.RED + languageConfig.getIslandLimitReached());
-            return;
-        }
-        IslandEntity islandEntity = new IslandEntity();
-        islandEntity.setOwnerUuid(player.getUniqueId());
-        islandEntity.setName(islandName);
-        islandEntity.setHome(new Vector(0,0,0));
-        islandEntity.setPublicIsland(mainConfig.isDefaultPublicIsland());
-        if (mainConfig.isBungeeCord()){
-            islandEntity.setBungeeServerName(mainConfig.getCurrentBungeeCordServerName());
-        }
+        PlayerDataManager playerDataManager = plugin.getPlayerDataManager();
+
         try {
+            if (getPlayerIslandCount(player) >= playerDataManager.getPlayerIslandLimit(player.getUniqueId()) && !player.hasPermission(adminPermission)) {
+                player.sendMessage(ChatColor.RED + languageConfig.getIslandLimitReached());
+                return;
+            }
+            IslandEntity islandEntity = new IslandEntity();
+            islandEntity.setOwnerUuid(player.getUniqueId());
+            islandEntity.setName(islandName);
+            islandEntity.setHome(new Vector(0,0,0));
+            islandEntity.setPublicIsland(mainConfig.isDefaultPublicIsland());
+            if (mainConfig.isBungeeCord()){
+                islandEntity.setBungeeServerName(mainConfig.getCurrentBungeeCordServerName());
+            }
             islandDAO.create(islandEntity);
             player.sendMessage(ChatColor.GOLD + languageConfig.getLoadIslandPleaseWait());
             createAndLoadActualWorld(World.Environment.NORMAL, player.getUniqueId() + "_" + getIslandId(islandName));
