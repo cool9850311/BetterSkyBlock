@@ -17,6 +17,8 @@ public class PlayerDataEntity {
     private int id;
     @DatabaseField(columnName = "player_uuid", unique = true)
     private UUID playerUuid;
+    @DatabaseField(columnName = "island_number_limit")
+    private int islandNumberLimit;
     @DatabaseField(columnName = "border_size")
     private int borderSize;
     @DatabaseField(columnName = "create_time",dataType = DataType.DATE_STRING, format = "yyyy-MM-dd HH:mm:ss")
