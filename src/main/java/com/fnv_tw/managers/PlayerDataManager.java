@@ -1,7 +1,7 @@
 package com.fnv_tw.managers;
 
 import com.fnv_tw.BetterSkyBlock;
-import com.fnv_tw.api.BorderSizeInterface;
+import com.fnv_tw.api.IslandPlayerData;
 import com.fnv_tw.configs.Language;
 import com.fnv_tw.configs.MainConfig;
 import com.fnv_tw.database.Entity.PlayerDataEntity;
@@ -16,7 +16,7 @@ import java.sql.SQLException;
 import java.util.Optional;
 import java.util.UUID;
 
-public class PlayerDataManager implements BorderSizeInterface {
+public class PlayerDataManager implements IslandPlayerData {
     private final PlayerDataDAO playerDataDAO;
     private final Language languageConfig;
     private final MainConfig mainConfig;
@@ -28,6 +28,7 @@ public class PlayerDataManager implements BorderSizeInterface {
         ConnectionSource connectionSource = BetterSkyBlock.getInstance().getDataBaseManager().getConnectionSource();
         playerDataDAO = PlayerDataDAO.getInstance(connectionSource, PlayerDataEntity.class);
     }
+    // api
     public int getPlayerBorderSize(UUID playerUUID) throws Exception {
         try {
             Optional<PlayerDataEntity> playerDataEntity = playerDataDAO.queryForEq("player_uuid", playerUUID).stream().findFirst();
@@ -53,6 +54,9 @@ public class PlayerDataManager implements BorderSizeInterface {
                 return true;
             }
             PlayerDataEntity playerDataEntity = playerDataDAO.queryForId(playerDataId);
+            if (currentBorderSize < mainConfig.getDefaultBorderSize()) {
+                currentBorderSize = mainConfig.getDefaultBorderSize();
+            }
             playerDataEntity.setBorderSize(currentBorderSize + addBorderSize);
             playerDataDAO.update(playerDataEntity);
         } catch (SQLException e) {
