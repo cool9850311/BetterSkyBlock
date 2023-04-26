@@ -54,9 +54,6 @@ public class PlayerDataManager implements IslandPlayerData {
                 return true;
             }
             PlayerDataEntity playerDataEntity = playerDataDAO.queryForId(playerDataId);
-            if (currentBorderSize < mainConfig.getDefaultBorderSize()) {
-                currentBorderSize = mainConfig.getDefaultBorderSize();
-            }
             playerDataEntity.setBorderSize(currentBorderSize + addBorderSize);
             playerDataDAO.update(playerDataEntity);
         } catch (SQLException e) {
