@@ -87,7 +87,6 @@ public class IslandManager {
             player.sendMessage(ChatColor.RED + languageConfig.getServerError());
         }
     }
-    // TODO: Island Count Limit for each player
     public void createWorld(Player player, String islandName) {
         if (isIslandExist(islandName)) {
             player.sendMessage(ChatColor.RED + languageConfig.getIslandNameAlreadyExist());
