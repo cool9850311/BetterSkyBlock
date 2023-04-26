@@ -33,7 +33,11 @@ public class PlayerDataManager implements IslandPlayerData {
         try {
             Optional<PlayerDataEntity> playerDataEntity = playerDataDAO.queryForEq("player_uuid", playerUUID).stream().findFirst();
             if (playerDataEntity.isPresent()) {
-                return playerDataEntity.get().getIslandNumberLimit();
+                int islandLimit = playerDataEntity.get().getIslandNumberLimit();
+                if (islandLimit < mainConfig.getIslandLimit()) {
+                    islandLimit = mainConfig.getIslandLimit();
+                }
+                return islandLimit;
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -87,7 +91,11 @@ public class PlayerDataManager implements IslandPlayerData {
         try {
             Optional<PlayerDataEntity> playerDataEntity = playerDataDAO.queryForEq("player_uuid", playerUUID).stream().findFirst();
             if (playerDataEntity.isPresent()) {
-                return playerDataEntity.get().getBorderSize();
+                int borderSize = playerDataEntity.get().getBorderSize();
+                if (borderSize < mainConfig.getDefaultBorderSize()) {
+                    borderSize = mainConfig.getDefaultBorderSize();
+                }
+                return borderSize;
             }
         } catch (SQLException e) {
             e.printStackTrace();
