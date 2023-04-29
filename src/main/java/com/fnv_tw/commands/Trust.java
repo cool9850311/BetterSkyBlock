@@ -29,6 +29,10 @@ public class Trust implements TabCompleter, CommandExecutor {
             commandSender.sendMessage(ChatColor.RED + languageConfig.getDoNotHasPermission());
             return false;
         }
+        if (strings.length < 2 ){
+            commandSender.sendMessage(ChatColor.RED + languageConfig.getWrongCommand());
+            return false;
+        }
         String worldName = ((Player) commandSender).getWorld().getName();
         if (!plugin.getIslandManager().isInIslandWorld(worldName)){
             commandSender.sendMessage(ChatColor.RED + languageConfig.getNotOnIsland());
