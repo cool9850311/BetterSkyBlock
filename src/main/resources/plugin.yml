@@ -2,6 +2,7 @@ name: BetterSkyBlock
 main: com.fnv_tw.BetterSkyBlock
 version: 0.0.1
 api-version: '1.17'
+depend: [Multiverse-Core]
 commands:
   BetterSkyBlockIsland:
     description: "Main command of BetterSkyBlock"

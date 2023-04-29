@@ -13,6 +13,7 @@ import com.fnv_tw.utils.LocationUtil;
 import com.j256.ormlite.dao.GenericRawResults;
 import com.j256.ormlite.stmt.DeleteBuilder;
 import com.j256.ormlite.support.ConnectionSource;
+import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import org.bukkit.*;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
@@ -25,6 +26,7 @@ import java.util.*;
 
 public class IslandManager {
     private final BetterSkyBlock plugin;
+    private final MVWorldManager worldManager;
     private final IslandDAO islandDAO;
     private final IslandTrustDAO islandTrustDAO;
     private final Language languageConfig;
@@ -34,6 +36,7 @@ public class IslandManager {
 
     public IslandManager(){
         plugin = BetterSkyBlock.getInstance();
+        worldManager = plugin.getMultiverseCore().getMVWorldManager();
         languageConfig = plugin.getLanguageConfigManager().getConfig();
         mainConfig = plugin.getMainConfigConfigManager().getConfig();
         unUsedWorld = new HashSet<>();
@@ -60,7 +63,8 @@ public class IslandManager {
 
             // {uuid}_{islandId}
             String islandWorldName = player.getUniqueId() + "_" + islandId;
-            World world = createAndLoadActualWorld(World.Environment.NORMAL, islandWorldName);
+            worldManager.loadWorld(islandWorldName);
+            World world = Bukkit.getWorld(islandWorldName);
             IslandEntity islandIdEntity = islandDAO.queryForId(islandId);
             Vector vector =  islandIdEntity.getHome();
             Location homeLocation = new Location(world,vector.getX(),vector.getY(),vector.getZ());
@@ -169,10 +173,19 @@ public class IslandManager {
     // TODO: Different World.Environment
     // if exist load only
     public World createAndLoadActualWorld(World.Environment environment, String name) {
-        WorldCreator worldCreator = new WorldCreator(name)
-                .generator(BetterSkyBlock.getInstance().getDefaultWorldGenerator(name, null))
-                .environment(environment);
-        World world = Bukkit.createWorld(worldCreator);
+//        WorldCreator worldCreator = new WorldCreator(name)
+//                .generator(BetterSkyBlock.getInstance().getDefaultWorldGenerator(name, null))
+//                .environment(environment);
+
+        worldManager.addWorld(
+                name, // The worldname
+                environment, // The overworld environment type.
+                null, // The world seed. Any seed is fine for me, so we just pass null.
+                WorldType.NORMAL, // Nothing special. If you want something like a flat world, change this.
+                false, // This means we want to structures like villages to generator, Change to false if you don't want this.
+                "BetterSkyBlock" // Specifies a custom generator. We are not using any so we just pass null.
+        );
+        World world = Bukkit.getWorld(name);
         initIsland(world);
         return world;
     }
