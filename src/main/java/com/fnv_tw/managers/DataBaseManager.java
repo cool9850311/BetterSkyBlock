@@ -6,6 +6,7 @@ import com.fnv_tw.database.tableManager.TableManager;
 import com.j256.ormlite.db.DatabaseType;
 import com.j256.ormlite.db.DatabaseTypeUtils;
 import com.j256.ormlite.jdbc.JdbcConnectionSource;
+import com.j256.ormlite.jdbc.JdbcPooledConnectionSource;
 import com.j256.ormlite.logger.Logger;
 import com.j256.ormlite.logger.LoggerFactory;
 import com.j256.ormlite.support.ConnectionSource;
@@ -37,7 +38,7 @@ public class DataBaseManager {
         }
 
         logger.info("Connecting to {} database: {}", sqlConfig.getDriver(), dbUrl);
-        connectionSource = new JdbcConnectionSource(dbUrl, sqlConfig.getUsername(), sqlConfig.getPassword(), DatabaseTypeUtils.createDatabaseType(dbUrl));
+        connectionSource = new JdbcPooledConnectionSource(dbUrl, sqlConfig.getUsername(), sqlConfig.getPassword(), DatabaseTypeUtils.createDatabaseType(dbUrl));
     }
     public ConnectionSource getConnectionSource() {
         return connectionSource;
