@@ -13,7 +13,9 @@ import com.fnv_tw.utils.LocationUtil;
 import com.j256.ormlite.dao.GenericRawResults;
 import com.j256.ormlite.stmt.DeleteBuilder;
 import com.j256.ormlite.support.ConnectionSource;
+import com.onarandombox.MultiverseCore.MVWorld;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
+import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import org.bukkit.*;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
@@ -62,7 +64,7 @@ public class IslandManager {
             int islandId = getIslandId(islandName);
 
             // {uuid}_{islandId}
-            String islandWorldName = player.getUniqueId() + "_" + islandId;
+            String islandWorldName = getIslandOwnerUUID(islandName) + "_" + islandId;
             worldManager.loadWorld(islandWorldName);
             World world = Bukkit.getWorld(islandWorldName);
             IslandEntity islandIdEntity = islandDAO.queryForId(islandId);
@@ -185,6 +187,8 @@ public class IslandManager {
                 false, // This means we want to structures like villages to generator, Change to false if you don't want this.
                 "BetterSkyBlock" // Specifies a custom generator. We are not using any so we just pass null.
         );
+        MultiverseWorld multiverseWorld = worldManager.getMVWorld(name);
+        multiverseWorld.setDifficulty(Difficulty.HARD);
         World world = Bukkit.getWorld(name);
         initIsland(world);
         return world;
@@ -241,6 +245,15 @@ public class IslandManager {
         }
         return false;
     }
+    public UUID getIslandOwnerUUID(String islandName) {
+        try {
+            int islandId = getIslandId(islandName);
+            return islandDAO.queryForId(islandId).getOwnerUuid();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
     public boolean isPlayerTrusted(Player player, String islandName) {
         try {
 
@@ -249,7 +262,7 @@ public class IslandManager {
             if (isIslandOwner(player, islandName)) {
                 return true;
             }
-            List<UUID> islandTrustEntity = islandTrustDAO.queryForEq("islandId", islandId).stream().map(IslandTrustEntity::getPlayerUuid).toList();
+            List<UUID> islandTrustEntity = islandTrustDAO.queryForEq("island_id", islandId).stream().map(IslandTrustEntity::getPlayerUuid).toList();
             if (islandTrustEntity.contains(player.getUniqueId())) {
                 return true;
             }
