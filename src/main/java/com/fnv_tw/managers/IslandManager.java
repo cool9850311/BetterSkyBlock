@@ -154,7 +154,8 @@ public class IslandManager {
             for (Player player:world.getPlayers()) {
                 player.performCommand("is tpNormal");
             }
-            Bukkit.unloadWorld(worldName, true);
+            worldManager.unloadWorld(worldName);
+            //Bukkit.unloadWorld(worldName, true);
             commandSender.sendMessage(ChatColor.GOLD + languageConfig.getUnloadIslandSuccess());
         } catch (Exception e) {
             e.printStackTrace();
@@ -189,6 +190,7 @@ public class IslandManager {
         );
         MultiverseWorld multiverseWorld = worldManager.getMVWorld(name);
         multiverseWorld.setDifficulty(Difficulty.HARD);
+        multiverseWorld.setAutoLoad(false);
         World world = Bukkit.getWorld(name);
         initIsland(world);
         return world;
@@ -223,7 +225,8 @@ public class IslandManager {
             }
             if (world.getPlayers().size() == 0) {
                 if (unUsedWorld.contains(worldName)){
-                    Bukkit.unloadWorld(world.getName(), true);
+                    worldManager.unloadWorld(world.getName());
+                    // Bukkit.unloadWorld(world.getName(), true);
                     unUsedWorld.remove(worldName);
                     continue;
                 }

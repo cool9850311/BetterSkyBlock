@@ -5,13 +5,18 @@ import com.fnv_tw.configs.Language;
 import com.fnv_tw.configs.MainConfig;
 import com.fnv_tw.managers.IslandManager;
 import com.fnv_tw.utils.LocationUtil;
+import com.fnv_tw.utils.SerializerUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.util.Vector;
+import org.spigotmc.event.player.PlayerSpawnLocationEvent;
 
 public class PlayerListener implements Listener {
     private final BetterSkyBlock plugin;
@@ -55,5 +60,23 @@ public class PlayerListener implements Listener {
         String islandName = plugin.getIslandManager().getIslandNameById(islandId);
         islandManager.teleportToIsland(e.getPlayer(), islandName, false);
 
+    }
+    // PlayerSpawnLocationEvent
+    @EventHandler
+    public void onSpawnLocation(PlayerSpawnLocationEvent e) {
+        // FIXME: USE BETTER WAY to deal with player get spawn in world 000 after their island get unlaod
+        World world = Bukkit.getWorld(mainConfig.getDefaultWorldName());
+        if (!e.getSpawnLocation().getWorld().getName().equals(world.getName())){
+            return;
+        }
+        if (e.getSpawnLocation().distance(new Location(e.getSpawnLocation().getWorld(), 0,0,0)) < 5) {
+            if (LocationUtil.isSafe(e.getSpawnLocation())) {
+                return;
+            }
+            // Bukkit.getLogger().info("PlayerSpawnLocationEvent: IF CLAUSE");
+
+            Vector position = SerializerUtil.deserialize(mainConfig.getDefaultWorldSpawn(),Vector.class);
+            e.setSpawnLocation(LocationUtil.getSafeLocation(new Location(world,position.getX(),position.getY(),position.getZ())));
+        }
     }
 }
