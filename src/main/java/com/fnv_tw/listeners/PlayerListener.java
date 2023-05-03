@@ -69,14 +69,19 @@ public class PlayerListener implements Listener {
         if (!e.getSpawnLocation().getWorld().getName().equals(world.getName())){
             return;
         }
-        if (e.getSpawnLocation().distance(new Location(e.getSpawnLocation().getWorld(), 0,0,0)) < 5) {
+        if (e.getSpawnLocation().distance(new Location(e.getSpawnLocation().getWorld(), 0,0,0)) < 10) {
             if (LocationUtil.isSafe(e.getSpawnLocation())) {
                 return;
             }
             // Bukkit.getLogger().info("PlayerSpawnLocationEvent: IF CLAUSE");
 
             Vector position = SerializerUtil.deserialize(mainConfig.getDefaultWorldSpawn(),Vector.class);
-            e.setSpawnLocation(LocationUtil.getSafeLocation(new Location(world,position.getX(),position.getY(),position.getZ())));
+            Location location = new Location(world,position.getX(),position.getY(),position.getZ());
+            if (LocationUtil.isSafe(location)) {
+                e.setSpawnLocation(location);
+                return;
+            }
+            e.setSpawnLocation(LocationUtil.getSafeLocation(location));
         }
     }
 }
