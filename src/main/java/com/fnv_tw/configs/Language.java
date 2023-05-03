@@ -35,4 +35,7 @@ public class Language {
     private String setPlayerBorderSizeSuccess = "Set Player Border Size Successfully.";
     private String addPlayerIslandLimitSuccess = "Add Player Island Limit Successfully.";
     private String setPlayerIslandLimitSuccess = "Set Player Island Limit Successfully.";
+    private String playerNotInBoat = "You are not in a boat.";
+    private String playerAnimalNotInBoat = "You and Animal should be in the boat.";
+    private String canNotBoatTpPlayer = "You can not tp player with boat tp command.";
 }

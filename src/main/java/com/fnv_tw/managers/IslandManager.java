@@ -19,7 +19,10 @@ import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import org.bukkit.*;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.entity.Boat;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Vehicle;
 import org.bukkit.util.Vector;
 
 import java.sql.Connection;
@@ -88,6 +91,77 @@ public class IslandManager {
 
             player.setFallDistance(0.0f);
             player.teleport(tpLocation);
+        } catch (Exception e) {
+            e.printStackTrace();
+            player.sendMessage(ChatColor.RED + languageConfig.getServerError());
+        }
+    }
+
+    public void boatTeleportToIsland(Player player, String islandName, boolean unsafe) {
+        if (!isIslandExist(islandName)) {
+            player.sendMessage(ChatColor.RED + languageConfig.getIslandNameNotExist());
+            return;
+        }
+        if (!isPlayerTrusted(player, islandName) && !isPublicIsland(islandName) && !player.hasPermission(adminPermission)) {
+            player.sendMessage(ChatColor.RED + languageConfig.getNotInIslandTrustList());
+            return;
+        }
+        if (islandIsBaned(islandName) && !player.hasPermission(adminPermission)) {
+            player.sendMessage(ChatColor.RED + languageConfig.getIslandIsBanedWarning());
+            return;
+        }
+        try {
+            int islandId = getIslandId(islandName);
+
+            // {uuid}_{islandId}
+            String islandWorldName = getIslandOwnerUUID(islandName) + "_" + islandId;
+            worldManager.loadWorld(islandWorldName);
+            World world = Bukkit.getWorld(islandWorldName);
+            IslandEntity islandIdEntity = islandDAO.queryForId(islandId);
+            Vector vector =  islandIdEntity.getHome();
+            Location homeLocation = new Location(world,vector.getX(),vector.getY(),vector.getZ());
+            Location tpLocation = LocationUtil.getSafeLocation(homeLocation);
+            Entity vehicle = player.getVehicle();
+            if (!(vehicle instanceof Boat)){
+                player.sendMessage(ChatColor.RED + languageConfig.getPlayerNotInBoat());
+                return;
+            }
+            List<Entity> inBoatEntities = vehicle.getPassengers();
+            if (inBoatEntities.size() != 2) {
+                player.sendMessage(ChatColor.RED + languageConfig.getPlayerAnimalNotInBoat());
+                return;
+            }
+            int playerEntityCount = 0;
+            for (Entity inBoatEntity : inBoatEntities) {
+                if(inBoatEntity instanceof Player) {
+                    playerEntityCount +=1;
+                }
+            }
+            if (playerEntityCount == 2) {
+                player.sendMessage(ChatColor.RED + languageConfig.getCanNotBoatTpPlayer());
+                return;
+            }
+            if (unsafe) {
+                for (Entity inBoatEntity : inBoatEntities) {
+                    inBoatEntity.setFallDistance(0.0f);
+                    inBoatEntity.teleport(homeLocation);
+                }
+                return;
+            }
+            if (tpLocation == null) {
+                // island void case
+                if (player.getWorld().getName().equals(world.getName())){
+                    player.performCommand("is tpNormal");
+                    return;
+                }
+                player.sendMessage(ChatColor.RED + languageConfig.getTeleportUnsafe());
+                return;
+            }
+
+            for (Entity inBoatEntity : inBoatEntities) {
+                inBoatEntity.setFallDistance(0.0f);
+                inBoatEntity.teleport(homeLocation);
+            }
         } catch (Exception e) {
             e.printStackTrace();
             player.sendMessage(ChatColor.RED + languageConfig.getServerError());
