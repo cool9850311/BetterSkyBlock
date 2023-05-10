@@ -46,7 +46,7 @@ public class PlayerDataManager implements IslandPlayerData {
         return mainConfig.getIslandLimit();
     }
     //api
-    public boolean addPlayerIslandLimit(UUID playerUUID, int addIslandLimit) throws Exception{
+    public void addPlayerIslandLimit(UUID playerUUID, int addIslandLimit) throws Exception{
         try {
             int currentPlayerIslandLimit = getPlayerIslandLimit(playerUUID);
             int playerDataId = getPlayerDataIDByUUID(playerUUID);
@@ -55,7 +55,7 @@ public class PlayerDataManager implements IslandPlayerData {
                 playerDataEntity.setPlayerUuid(playerUUID);
                 playerDataEntity.setIslandNumberLimit(currentPlayerIslandLimit + addIslandLimit);
                 playerDataDAO.create(playerDataEntity);
-                return true;
+                return;
             }
             PlayerDataEntity playerDataEntity = playerDataDAO.queryForId(playerDataId);
             playerDataEntity.setIslandNumberLimit(currentPlayerIslandLimit + addIslandLimit);
@@ -64,10 +64,9 @@ public class PlayerDataManager implements IslandPlayerData {
             e.printStackTrace();
             throw new Exception("DATABASE ERROR");
         }
-        return true;
     }
     //api
-    public boolean setPlayerIslandLimit(UUID playerUUID, int setIslandLimit) throws Exception{
+    public void setPlayerIslandLimit(UUID playerUUID, int setIslandLimit) throws Exception{
         try {
             int playerDataId = getPlayerDataIDByUUID(playerUUID);
             if (playerDataId == -1) {
@@ -75,7 +74,7 @@ public class PlayerDataManager implements IslandPlayerData {
                 playerDataEntity.setPlayerUuid(playerUUID);
                 playerDataEntity.setIslandNumberLimit(setIslandLimit);
                 playerDataDAO.create(playerDataEntity);
-                return true;
+                return;
             }
             PlayerDataEntity playerDataEntity = playerDataDAO.queryForId(playerDataId);
             playerDataEntity.setIslandNumberLimit(setIslandLimit);
@@ -84,7 +83,6 @@ public class PlayerDataManager implements IslandPlayerData {
             e.printStackTrace();
             throw new Exception("DATABASE ERROR");
         }
-        return true;
     }
     // api
     public int getPlayerBorderSize(UUID playerUUID) throws Exception {
@@ -104,7 +102,7 @@ public class PlayerDataManager implements IslandPlayerData {
         return mainConfig.getDefaultBorderSize();
     }
     // api
-    public boolean addPlayerBorderSize(UUID playerUUID, int addBorderSize) throws Exception{
+    public void addPlayerBorderSize(UUID playerUUID, int addBorderSize) throws Exception{
         try {
             int currentBorderSize = getPlayerBorderSize(playerUUID);
             int playerDataId = getPlayerDataIDByUUID(playerUUID);
@@ -113,7 +111,7 @@ public class PlayerDataManager implements IslandPlayerData {
                 playerDataEntity.setPlayerUuid(playerUUID);
                 playerDataEntity.setBorderSize(currentBorderSize + addBorderSize);
                 playerDataDAO.create(playerDataEntity);
-                return true;
+                return;
             }
             PlayerDataEntity playerDataEntity = playerDataDAO.queryForId(playerDataId);
             playerDataEntity.setBorderSize(currentBorderSize + addBorderSize);
@@ -122,10 +120,9 @@ public class PlayerDataManager implements IslandPlayerData {
             e.printStackTrace();
             throw new Exception("DATABASE ERROR");
         }
-        return true;
     }
     // api
-    public boolean setPlayerBorderSize(UUID playerUUID, int setBorderSize) throws Exception{
+    public void setPlayerBorderSize(UUID playerUUID, int setBorderSize) throws Exception{
         try {
             int playerDataId = getPlayerDataIDByUUID(playerUUID);
             if (playerDataId == -1) {
@@ -133,12 +130,11 @@ public class PlayerDataManager implements IslandPlayerData {
                 playerDataEntity.setPlayerUuid(playerUUID);
                 playerDataEntity.setBorderSize(setBorderSize);
                 playerDataDAO.create(playerDataEntity);
-                return true;
+                return;
             }
             PlayerDataEntity playerDataEntity = playerDataDAO.queryForId(playerDataId);
             playerDataEntity.setBorderSize(setBorderSize);
             playerDataDAO.update(playerDataEntity);
-            return true;
 
         } catch (SQLException e) {
             e.printStackTrace();
