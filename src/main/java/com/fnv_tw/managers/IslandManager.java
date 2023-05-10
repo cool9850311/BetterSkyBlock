@@ -82,6 +82,7 @@ public class IslandManager {
             if (tpLocation == null) {
                 // island void case
                 if (player.getWorld().getName().equals(world.getName())){
+                    // FIXME: DON't USE Command
                     player.performCommand("is tpNormal");
                     return;
                 }
@@ -151,6 +152,7 @@ public class IslandManager {
             if (tpLocation == null) {
                 // island void case
                 if (player.getWorld().getName().equals(world.getName())){
+                    // FIXME: DON't USE Command
                     player.performCommand("is tpNormal");
                     return;
                 }
@@ -226,6 +228,7 @@ public class IslandManager {
             String worldName = islandEntity.getOwnerUuid() + "_" + islandId;
             World world = Bukkit.getWorld(worldName);
             for (Player player:world.getPlayers()) {
+                // FIXME: DON't USE Command
                 player.performCommand("is tpNormal");
             }
             worldManager.unloadWorld(worldName);

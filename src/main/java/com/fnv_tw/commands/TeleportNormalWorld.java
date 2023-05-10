@@ -40,6 +40,12 @@ public class TeleportNormalWorld implements TabCompleter, CommandExecutor {
         }
         World world = Bukkit.getWorld(mainConfig.getDefaultWorldName());
         Vector position = SerializerUtil.deserialize(mainConfig.getDefaultWorldSpawn(),Vector.class);
+        Location location = new Location(world,position.getX(),position.getY(),position.getZ());
+        if (LocationUtil.isSafe(location)) {
+            ((Player) commandSender).setFallDistance(0.0f);
+            ((Player) commandSender).teleport(location);
+            return true;
+        }
         ((Player) commandSender).setFallDistance(0.0f);
         ((Player) commandSender).teleport(LocationUtil.getSafeLocation(new Location(world,position.getX(),position.getY(),position.getZ())));
         return true;
