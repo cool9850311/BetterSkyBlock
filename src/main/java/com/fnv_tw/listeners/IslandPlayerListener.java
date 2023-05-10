@@ -10,7 +10,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
@@ -18,13 +17,13 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.util.Vector;
 import org.spigotmc.event.player.PlayerSpawnLocationEvent;
 
-public class PlayerListener implements Listener {
+public class IslandPlayerListener implements Listener {
     private final BetterSkyBlock plugin;
     private final MainConfig mainConfig;
     private final IslandManager islandManager;
     private final Language languageConfig;
 
-    public PlayerListener() {
+    public IslandPlayerListener() {
         plugin = BetterSkyBlock.getInstance();
         mainConfig = plugin.getMainConfigConfigManager().getConfig();
         languageConfig = plugin.getLanguageConfigManager().getConfig();

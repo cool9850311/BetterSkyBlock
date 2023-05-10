@@ -6,7 +6,8 @@ import com.fnv_tw.configs.MainConfig;
 import com.fnv_tw.configs.Language;
 import com.fnv_tw.configs.SQL;
 import com.fnv_tw.generator.VoidGenerator;
-import com.fnv_tw.listeners.PlayerListener;
+import com.fnv_tw.listeners.IslandFlyListener;
+import com.fnv_tw.listeners.IslandPlayerListener;
 import com.fnv_tw.managers.*;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import lombok.Getter;
@@ -111,6 +112,7 @@ public class BetterSkyBlock extends JavaPlugin {
         commandManager.registerCommand("help",new Help());
     }
     private void registerEvents() {
-        getServer().getPluginManager().registerEvents(new PlayerListener(), this);
+        getServer().getPluginManager().registerEvents(new IslandPlayerListener(), this);
+        getServer().getPluginManager().registerEvents(new IslandFlyListener(), this);
     }
 }

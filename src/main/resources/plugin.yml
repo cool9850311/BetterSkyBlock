@@ -20,3 +20,7 @@ permissions:
     description: "Admin Permission"
   betterskyblock.usage:
     description: "Permission to use /is"
+  betterskyblock.fly:
+    description: "Permission to fly on island"
+  betterskyblock.bypass.fly:
+    description: "Permission to bypass fly action on island"
