@@ -162,7 +162,7 @@ public class IslandManager {
 
             for (Entity inBoatEntity : inBoatEntities) {
                 inBoatEntity.setFallDistance(0.0f);
-                inBoatEntity.teleport(homeLocation);
+                inBoatEntity.teleport(tpLocation);
             }
         } catch (Exception e) {
             e.printStackTrace();
