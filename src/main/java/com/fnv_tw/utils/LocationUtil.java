@@ -26,7 +26,7 @@ public class LocationUtil {
 
     public static Location getSafeLocation(Location location) {
         World world = location.getWorld();
-
+        if (isSafe(location)) return location;
         Location highest = getHighestLocation(location.getBlockX(), location.getBlockZ(), world);
         if (isSafe(highest)) return highest;
 
