@@ -38,4 +38,11 @@ public class Language {
     private String playerNotInBoat = "You are not in a boat.";
     private String playerAnimalNotInBoat = "You and Animal should be in the boat.";
     private String canNotBoatTpPlayer = "You can not tp player with boat tp command.";
+    private String acceptInAcceptRejectGUI = "Accept";
+    private String rejectInAcceptRejectGUI = "Reject";
+    private String createIslandGUITitle = "Island Environments";
+    private String normalCreateIslandGUI = "Normal Island";
+    private String netherCreateIslandGUI = "Nether Island";
+    private String theEndCreateIslandGUI = "The End Island";
+    private String createIslandConfirmTitle = "Click Accept to create";
 }

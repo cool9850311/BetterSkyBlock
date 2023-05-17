@@ -23,6 +23,7 @@ import org.bukkit.entity.Boat;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Vehicle;
+import org.bukkit.structure.Structure;
 import org.bukkit.util.Vector;
 
 import java.sql.Connection;
@@ -169,7 +170,7 @@ public class IslandManager {
             player.sendMessage(ChatColor.RED + languageConfig.getServerError());
         }
     }
-    public void createWorld(Player player, String islandName) {
+    public void createWorld(Player player, String islandName, World.Environment environment) {
         if (isIslandExist(islandName)) {
             player.sendMessage(ChatColor.RED + languageConfig.getIslandNameAlreadyExist());
             return;
@@ -191,7 +192,7 @@ public class IslandManager {
             }
             islandDAO.create(islandEntity);
             player.sendMessage(ChatColor.GOLD + languageConfig.getLoadIslandPleaseWait());
-            createAndLoadActualWorld(World.Environment.NORMAL, player.getUniqueId() + "_" + getIslandId(islandName));
+            createAndLoadActualWorld(environment, player.getUniqueId() + "_" + getIslandId(islandName));
         } catch (Exception e) {
             e.printStackTrace();
             player.sendMessage(ChatColor.RED + languageConfig.getServerError());
@@ -279,7 +280,6 @@ public class IslandManager {
         }
         throw new Exception("Can not found Island id with" + islandName);
     }
-
     private void initIsland(World world) {
         Location loc = new Location(world,0,0,0);
         if (loc.getBlock().isEmpty()) {

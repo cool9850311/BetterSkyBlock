@@ -2,6 +2,7 @@ package com.fnv_tw.commands;
 
 import com.fnv_tw.BetterSkyBlock;
 import com.fnv_tw.configs.Language;
+import com.fnv_tw.gui.CreateIslandGUI;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -30,7 +31,8 @@ public class CreateIsland implements TabCompleter, CommandExecutor {
             commandSender.sendMessage(ChatColor.RED + languageConfig.getWrongCommand());
             return false;
         }
-        plugin.getIslandManager().createWorld(((Player) commandSender).getPlayer(), strings[1]);
+//        plugin.getIslandManager().createWorld(((Player) commandSender).getPlayer(), strings[1]);
+        new CreateIslandGUI(((Player) commandSender).getPlayer(), strings[1]).open();
         return true;
     }
 
