@@ -57,6 +57,9 @@ public class CreateIslandGUI extends AbstractGUI{
 
     @Override
     public void clickItemOperation(ItemStack item) {
+        if (item!=null && !item.getItemMeta().hasCustomModelData()) {
+            return;
+        }
         String title;
         switch (item.getItemMeta().getCustomModelData()) {
 

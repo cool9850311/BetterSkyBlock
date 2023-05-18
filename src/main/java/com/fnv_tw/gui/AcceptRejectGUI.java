@@ -47,6 +47,9 @@ public class AcceptRejectGUI extends AbstractGUI{
 
     @Override
     public void clickItemOperation(ItemStack item) {
+        if (item!=null && !item.getItemMeta().hasCustomModelData()) {
+            return;
+        }
         if(item.getItemMeta().getCustomModelData()==11){
             close(true);
             if (acceptAction != null) {
