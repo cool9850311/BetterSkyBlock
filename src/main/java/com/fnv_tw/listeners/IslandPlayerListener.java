@@ -68,7 +68,7 @@ public class IslandPlayerListener implements Listener {
         if (!e.getSpawnLocation().getWorld().getName().equals(world.getName())){
             return;
         }
-        if (e.getSpawnLocation().distance(new Location(e.getSpawnLocation().getWorld(), 0,0,0)) < 10) {
+        if (e.getSpawnLocation().distance(new Location(e.getSpawnLocation().getWorld(), 0,0,0)) < 100) {
             if (LocationUtil.isSafe(e.getSpawnLocation())) {
                 return;
             }
