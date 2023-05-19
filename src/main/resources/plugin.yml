@@ -10,6 +10,7 @@ commands:
   AdminIslandCommand:
     description: "Commands for admin only"
     aliases: [isadmin]
+    permission: betterskyblock.admin
 permissions:
   betterskyblock.*:
     description: "All coin shop permissions"
