@@ -45,4 +45,10 @@ public class Language {
     private String netherCreateIslandGUI = "Nether Island";
     private String theEndCreateIslandGUI = "The End Island";
     private String createIslandConfirmTitle = "Click Accept to create";
+    private String pageOutOfRange = "Page out of range.";
+    private String islandHelp = "BetterSkyBlock Help";
+    private String islandHelpNextPage = "Next Page";
+    private String islandHelpNextPageHover = "Click to view next page.";
+    private String islandHelpPreviousPage = "Previous Page";
+    private String islandHelpPreviousPageHover = "Click to view previous page.";
 }

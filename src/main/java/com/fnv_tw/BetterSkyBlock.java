@@ -2,6 +2,7 @@ package com.fnv_tw;
 
 import com.fnv_tw.commands.*;
 import com.fnv_tw.commands.admin.*;
+import com.fnv_tw.configs.CommandDescription;
 import com.fnv_tw.configs.MainConfig;
 import com.fnv_tw.configs.Language;
 import com.fnv_tw.configs.SQL;
@@ -30,6 +31,7 @@ public class BetterSkyBlock extends JavaPlugin {
     private ConfigManager<SQL> sqlConfigManager;
     private ConfigManager<Language> languageConfigManager;
     private ConfigManager<MainConfig> mainConfigConfigManager;
+    private ConfigManager<CommandDescription> commandDescriptionConfigManager;
     @Override
     public void onLoad() {
         super.onLoad();
@@ -91,6 +93,7 @@ public class BetterSkyBlock extends JavaPlugin {
         mainConfigConfigManager = new ConfigManager<>(new MainConfig());
         sqlConfigManager = new ConfigManager<>(new SQL());
         languageConfigManager = new ConfigManager<>(new Language());
+        commandDescriptionConfigManager = new ConfigManager<>(new CommandDescription());
         // Bukkit.getLogger().info("sqlConfig:" + sqlConfig.getPort());
     }
     private void registerCommands() {
