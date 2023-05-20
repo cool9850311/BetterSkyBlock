@@ -7,6 +7,7 @@ commands:
   BetterSkyBlockIsland:
     description: "Main command of BetterSkyBlock"
     aliases: [is]
+    permission: betterskyblock.usage
   AdminIslandCommand:
     description: "Commands for admin only"
     aliases: [isadmin]
