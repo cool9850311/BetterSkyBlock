@@ -285,6 +285,12 @@ public class IslandManager {
         if (loc.getBlock().isEmpty()) {
             loc.getBlock().setType(Material.BEDROCK);
         }
+        if (world.getEnvironment().equals(World.Environment.THE_END) && mainConfig.isTheEndIslandFillEndStone()) {
+            fillEndStoneAroundTheEndExitPortal(world, 1, 1);
+            fillEndStoneAroundTheEndExitPortal(world, 1, -1);
+            fillEndStoneAroundTheEndExitPortal(world, -1, 1);
+            fillEndStoneAroundTheEndExitPortal(world, -1, -1);
+        }
         UUID playerUUID = UUID.fromString(world.getName().split("_")[0]);
         PlayerDataManager playerDataManager = plugin.getPlayerDataManager();
         try {
@@ -292,6 +298,30 @@ public class IslandManager {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+    private void fillEndStoneAroundTheEndExitPortal(World world, int xDirection, int zDirection) {
+        List<Location> fillList = new ArrayList<>();
+        fillList.add(new Location(world,2 * xDirection,0,3 * zDirection));
+        fillList.add(new Location(world,3 * xDirection,0,2 * zDirection));
+        fillList.add(new Location(world,3 * xDirection,0,3 * zDirection));
+        for (int x = 0; x < 16 ; x++) {
+            for (int z = 4; z < 16 ; z++) {
+                for (int y = 0; y < 3 ; y++) {
+                    fillList.add(new Location(world, x * xDirection, y, z * zDirection));
+                }
+            }
+        }
+        for (int x = 4; x < 16 ; x++) {
+            for (int z = 0; z < 16 ; z++) {
+                for (int y = 0; y < 3 ; y++) {
+                    fillList.add(new Location(world, x * xDirection, y, z * zDirection));
+                }
+            }
+        }
+        for (Location loc:fillList) {
+            loc.getBlock().setType(Material.END_STONE);
+        }
+
     }
     public void unloadUnusedWorldTask() {
         List<World> worlds = Bukkit.getWorlds();

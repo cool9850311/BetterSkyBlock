@@ -17,4 +17,5 @@ public class MainConfig {
     private String defaultWorldSpawn = "{\"x\":0.0,\"y\":0.0,\"z\":0.0}";
     private boolean defaultPublicIsland = false;
     private boolean voidTeleport = true;
+    private boolean theEndIslandFillEndStone = true;
 }
