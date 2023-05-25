@@ -3,8 +3,6 @@ package com.fnv_tw.managers;
 import com.fnv_tw.BetterSkyBlock;
 import com.fnv_tw.configs.Language;
 import com.fnv_tw.configs.MainConfig;
-import com.fnv_tw.database.PlayerDataDAO;
-import com.fnv_tw.database.Entity.PlayerDataEntity;
 import com.fnv_tw.database.Entity.IslandEntity;
 import com.fnv_tw.database.Entity.IslandTrustEntity;
 import com.fnv_tw.database.IslandDAO;
@@ -13,7 +11,6 @@ import com.fnv_tw.utils.LocationUtil;
 import com.j256.ormlite.dao.GenericRawResults;
 import com.j256.ormlite.stmt.DeleteBuilder;
 import com.j256.ormlite.support.ConnectionSource;
-import com.onarandombox.MultiverseCore.MVWorld;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import org.bukkit.*;
@@ -22,11 +19,8 @@ import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Boat;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.Vehicle;
-import org.bukkit.structure.Structure;
 import org.bukkit.util.Vector;
 
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.*;
 
@@ -38,7 +32,7 @@ public class IslandManager {
     private final Language languageConfig;
     private final MainConfig mainConfig;
     private final Set<String> unUsedWorld;
-    private final  String  adminPermission = "betterskyblock.admin";
+    public final static String ADMIN_PERMISSION = "betterskyblock.admin";
 
     public IslandManager(){
         plugin = BetterSkyBlock.getInstance();
@@ -56,11 +50,11 @@ public class IslandManager {
             player.sendMessage(ChatColor.RED + languageConfig.getIslandNameNotExist());
             return;
         }
-        if (!isPlayerTrusted(player, islandName) && !isPublicIsland(islandName) && !player.hasPermission(adminPermission)) {
+        if (!isPlayerTrusted(player, islandName) && !isPublicIsland(islandName) && !player.hasPermission(ADMIN_PERMISSION)) {
             player.sendMessage(ChatColor.RED + languageConfig.getNotInIslandTrustList());
             return;
         }
-        if (islandIsBaned(islandName) && !player.hasPermission(adminPermission)) {
+        if (islandIsBaned(islandName) && !player.hasPermission(ADMIN_PERMISSION)) {
             player.sendMessage(ChatColor.RED + languageConfig.getIslandIsBanedWarning());
             return;
         }
@@ -104,11 +98,11 @@ public class IslandManager {
             player.sendMessage(ChatColor.RED + languageConfig.getIslandNameNotExist());
             return;
         }
-        if (!isPlayerTrusted(player, islandName) && !isPublicIsland(islandName) && !player.hasPermission(adminPermission)) {
+        if (!isPlayerTrusted(player, islandName) && !isPublicIsland(islandName) && !player.hasPermission(ADMIN_PERMISSION)) {
             player.sendMessage(ChatColor.RED + languageConfig.getNotInIslandTrustList());
             return;
         }
-        if (islandIsBaned(islandName) && !player.hasPermission(adminPermission)) {
+        if (islandIsBaned(islandName) && !player.hasPermission(ADMIN_PERMISSION)) {
             player.sendMessage(ChatColor.RED + languageConfig.getIslandIsBanedWarning());
             return;
         }
@@ -178,7 +172,7 @@ public class IslandManager {
         PlayerDataManager playerDataManager = plugin.getPlayerDataManager();
 
         try {
-            if (getPlayerIslandCount(player) >= playerDataManager.getPlayerIslandLimit(player.getUniqueId()) && !player.hasPermission(adminPermission)) {
+            if (getPlayerIslandCount(player) >= playerDataManager.getPlayerIslandLimit(player.getUniqueId()) && !player.hasPermission(ADMIN_PERMISSION)) {
                 player.sendMessage(ChatColor.RED + languageConfig.getIslandLimitReached());
                 return;
             }
@@ -393,7 +387,7 @@ public class IslandManager {
                 operator.sendMessage(ChatColor.RED + languageConfig.getNotOnIsland());
                 return;
             }
-            if (!isIslandOwner(operator, islandName) && !operator.hasPermission(adminPermission)) {
+            if (!isIslandOwner(operator, islandName) && !operator.hasPermission(ADMIN_PERMISSION)) {
                 operator.sendMessage(ChatColor.RED + languageConfig.getDoNotHasPermission());
                 return;
             }
@@ -427,7 +421,7 @@ public class IslandManager {
                 operator.sendMessage(ChatColor.RED + languageConfig.getNotOnIsland());
                 return;
             }
-            if (!isIslandOwner(operator, islandName) && !operator.hasPermission(adminPermission)) {
+            if (!isIslandOwner(operator, islandName) && !operator.hasPermission(ADMIN_PERMISSION)) {
                 operator.sendMessage(ChatColor.RED + languageConfig.getDoNotHasPermission());
                 return;
             }
@@ -646,7 +640,7 @@ public class IslandManager {
             player.sendMessage(ChatColor.RED + languageConfig.getNotOnIsland());
             return;
         }
-        if (!isIslandOwner(player, islandName) && !player.hasPermission(adminPermission)) {
+        if (!isIslandOwner(player, islandName) && !player.hasPermission(ADMIN_PERMISSION)) {
             player.sendMessage(ChatColor.RED + languageConfig.getDoNotHasPermission());
             return;
         }

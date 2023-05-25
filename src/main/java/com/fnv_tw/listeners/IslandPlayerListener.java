@@ -38,7 +38,7 @@ public class IslandPlayerListener implements Listener {
         }
         int islandId = Integer.parseInt(e.getTo().getWorld().getName().split("_")[1]);
         String islandName = plugin.getIslandManager().getIslandNameById(islandId);
-        if (!islandManager.isPlayerTrusted(e.getPlayer(), islandName) && !islandManager.isPublicIsland(islandName)){
+        if (!islandManager.isPlayerTrusted(e.getPlayer(), islandName) && !islandManager.isPublicIsland(islandName) && !e.getPlayer().hasPermission(IslandManager.ADMIN_PERMISSION)){
             e.getPlayer().sendMessage(ChatColor.RED + languageConfig.getNotInIslandTrustList());
             e.setCancelled(true);
         }
