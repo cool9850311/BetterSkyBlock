@@ -63,9 +63,17 @@ public class IslandManager {
 
             // {uuid}_{islandId}
             String islandWorldName = getIslandOwnerUUID(islandName) + "_" + islandId;
+            IslandEntity islandIdEntity = islandDAO.queryForId(islandId);
+            if (mainConfig.isBungeeCord() && !islandIdEntity.getBungeeServerName().equals(mainConfig.getCurrentBungeeCordServerName())){
+                player.sendMessage(ChatColor.RED + languageConfig.getIslandNotInThisServer() + islandIdEntity.getBungeeServerName());
+                return;
+            }
             worldManager.loadWorld(islandWorldName);
             World world = Bukkit.getWorld(islandWorldName);
-            IslandEntity islandIdEntity = islandDAO.queryForId(islandId);
+            UUID playerUUID = UUID.fromString(world.getName().split("_")[0]);
+            PlayerDataManager playerDataManager = plugin.getPlayerDataManager();
+            world.getWorldBorder().setSize(playerDataManager.getPlayerBorderSize(playerUUID));
+
             Vector vector =  islandIdEntity.getHome();
             Location homeLocation = new Location(world,vector.getX(),vector.getY(),vector.getZ());
             Location tpLocation = LocationUtil.getSafeLocation(homeLocation);
@@ -111,9 +119,16 @@ public class IslandManager {
 
             // {uuid}_{islandId}
             String islandWorldName = getIslandOwnerUUID(islandName) + "_" + islandId;
+            IslandEntity islandIdEntity = islandDAO.queryForId(islandId);
+            if (mainConfig.isBungeeCord() && !islandIdEntity.getBungeeServerName().equals(mainConfig.getCurrentBungeeCordServerName())){
+                player.sendMessage(ChatColor.RED + languageConfig.getIslandNotInThisServer() + islandIdEntity.getBungeeServerName());
+                return;
+            }
             worldManager.loadWorld(islandWorldName);
             World world = Bukkit.getWorld(islandWorldName);
-            IslandEntity islandIdEntity = islandDAO.queryForId(islandId);
+            UUID playerUUID = UUID.fromString(world.getName().split("_")[0]);
+            PlayerDataManager playerDataManager = plugin.getPlayerDataManager();
+            world.getWorldBorder().setSize(playerDataManager.getPlayerBorderSize(playerUUID));
             Vector vector =  islandIdEntity.getHome();
             Location homeLocation = new Location(world,vector.getX(),vector.getY(),vector.getZ());
             Location tpLocation = LocationUtil.getSafeLocation(homeLocation);

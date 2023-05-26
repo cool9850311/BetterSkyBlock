@@ -4,6 +4,7 @@ import com.fnv_tw.BetterSkyBlock;
 import com.fnv_tw.configs.Language;
 import com.fnv_tw.configs.MainConfig;
 import com.fnv_tw.managers.IslandManager;
+import com.fnv_tw.managers.PlayerDataManager;
 import com.fnv_tw.utils.LocationUtil;
 import com.fnv_tw.utils.SerializerUtil;
 import org.bukkit.Bukkit;
@@ -16,6 +17,8 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.util.Vector;
 import org.spigotmc.event.player.PlayerSpawnLocationEvent;
+
+import java.util.UUID;
 
 public class IslandPlayerListener implements Listener {
     private final BetterSkyBlock plugin;
@@ -32,7 +35,8 @@ public class IslandPlayerListener implements Listener {
 
     @EventHandler
     public void onPlayerTeleport(PlayerTeleportEvent e) {
-        String worldName = e.getTo().getWorld().getName();
+        World world = e.getTo().getWorld();
+        String worldName = world.getName();
         if (!islandManager.isInIslandWorld(worldName)){
             return;
         }
@@ -41,6 +45,14 @@ public class IslandPlayerListener implements Listener {
         if (!islandManager.isPlayerTrusted(e.getPlayer(), islandName) && !islandManager.isPublicIsland(islandName) && !e.getPlayer().hasPermission(IslandManager.ADMIN_PERMISSION)){
             e.getPlayer().sendMessage(ChatColor.RED + languageConfig.getNotInIslandTrustList());
             e.setCancelled(true);
+            return;
+        }
+        UUID playerUUID = UUID.fromString(worldName.split("_")[0]);
+        PlayerDataManager playerDataManager = plugin.getPlayerDataManager();
+        try {
+            world.getWorldBorder().setSize(playerDataManager.getPlayerBorderSize(playerUUID));
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
     }
     @EventHandler

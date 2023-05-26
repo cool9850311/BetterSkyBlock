@@ -51,4 +51,5 @@ public class Language {
     private String islandHelpNextPageHover = "Click to view next page.";
     private String islandHelpPreviousPage = "Previous Page";
     private String islandHelpPreviousPageHover = "Click to view previous page.";
+    private String islandNotInThisServer = "Your Island is not in this server,please go to server:";
 }
