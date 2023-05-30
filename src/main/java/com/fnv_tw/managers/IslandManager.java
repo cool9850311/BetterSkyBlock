@@ -254,6 +254,9 @@ public class IslandManager {
     public int getPlayerIslandCount(Player player) {
         try {
             List<IslandEntity> islandEntities = islandDAO.queryForEq("owner_uuid", player.getUniqueId());
+            if (mainConfig.isBungeeCord() && mainConfig.isIslandNumberLimitPerServer()) {
+                return islandEntities.stream().filter(server -> server.getBungeeServerName().equals(mainConfig.getCurrentBungeeCordServerName())).toList().size();
+            }
             return islandEntities.size();
         } catch (SQLException e) {
             e.printStackTrace();

@@ -6,7 +6,7 @@ import lombok.Data;
 public class MainConfig {
     private boolean bungeeCord = false;
     private String currentBungeeCordServerName = "";
-    private boolean recordBorderSizeWithPermission = true;
+    private boolean islandNumberLimitPerServer = true;
     private boolean islandLimitPerPlayer = false;
     private int islandLimit = 1;
     private int defaultBorderSize = 80;
