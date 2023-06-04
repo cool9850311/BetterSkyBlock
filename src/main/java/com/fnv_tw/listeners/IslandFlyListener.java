@@ -44,13 +44,13 @@ public class IslandFlyListener implements Listener {
         if (islandManager.isInIslandWorld(world.getName())) {
             if (!player.getAllowFlight()) {
                 player.setAllowFlight(true);
-                player.sendRawMessage(ChatColor.GOLD + "開啟飛行模式");
+                player.sendRawMessage(ChatColor.GOLD + languageConfig.getIslandFlyEnable());
             }
             return;
         }
         if (player.getAllowFlight()) {
             player.setAllowFlight(false);
-            player.sendRawMessage(ChatColor.GOLD + "關閉飛行模式");
+            player.sendRawMessage(ChatColor.GOLD + languageConfig.getIslandFlyDisable());
         }
 
 
