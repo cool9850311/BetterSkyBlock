@@ -1,7 +1,8 @@
 name: BetterSkyBlock
 main: com.fnv_tw.BetterSkyBlock
 version: 0.0.1
-api-version: '1.17'
+api-version: '1.18'
+author: https://github.com/cool9850311
 depend: [Multiverse-Core]
 commands:
   BetterSkyBlockIsland:
@@ -14,7 +15,7 @@ commands:
     permission: betterskyblock.admin
 permissions:
   betterskyblock.*:
-    description: "All coin shop permissions"
+    description: "All BetterSkyBlock permissions"
     default: op
     children:
       betterskyblock.usage: true
