@@ -153,10 +153,15 @@ public class IslandManager {
                 return;
             }
             if (unsafe) {
-                for (Entity inBoatEntity : inBoatEntities) {
-                    inBoatEntity.setFallDistance(0.0f);
-                    inBoatEntity.teleport(homeLocation);
-                }
+                // tp mobs first
+                inBoatEntities.stream()
+                        .filter(entity -> !(entity instanceof Player))
+                        .forEach(entity -> {
+                            entity.setFallDistance(0.0f);
+                            entity.teleport(homeLocation);
+                        });
+                player.setFallDistance(0.0f);
+                player.teleport(homeLocation);
                 return;
             }
             if (tpLocation == null) {
@@ -169,11 +174,15 @@ public class IslandManager {
                 player.sendMessage(ChatColor.RED + languageConfig.getTeleportUnsafe());
                 return;
             }
-
-            for (Entity inBoatEntity : inBoatEntities) {
-                inBoatEntity.setFallDistance(0.0f);
-                inBoatEntity.teleport(tpLocation);
-            }
+            // tp mobs first
+            inBoatEntities.stream()
+                    .filter(entity -> !(entity instanceof Player))
+                    .forEach(entity -> {
+                        entity.setFallDistance(0.0f);
+                        entity.teleport(tpLocation);
+                    });
+            player.setFallDistance(0.0f);
+            player.teleport(tpLocation);
         } catch (Exception e) {
             e.printStackTrace();
             player.sendMessage(ChatColor.RED + languageConfig.getServerError());
