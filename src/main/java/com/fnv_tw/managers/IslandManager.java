@@ -10,6 +10,7 @@ import com.fnv_tw.database.IslandTrustDAO;
 import com.fnv_tw.utils.LocationUtil;
 import com.j256.ormlite.dao.GenericRawResults;
 import com.j256.ormlite.stmt.DeleteBuilder;
+import com.j256.ormlite.stmt.SelectArg;
 import com.j256.ormlite.support.ConnectionSource;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
@@ -222,7 +223,8 @@ public class IslandManager {
     }
     public boolean isIslandExist(String islandName) {
         try {
-            List<IslandEntity> islandEntities = islandDAO.queryForEq("name", islandName);
+            SelectArg selectArg = new SelectArg(islandName);
+            List<IslandEntity> islandEntities = islandDAO.queryForEq("name", selectArg);
             if (islandEntities.isEmpty()) {
                 return false;
             }
@@ -295,7 +297,8 @@ public class IslandManager {
         return world;
     }
     private int getIslandId(String islandName) throws Exception{
-        Optional<IslandEntity> islandIdEntity = islandDAO.queryForEq("name", islandName).stream().findFirst();
+        SelectArg selectArg = new SelectArg(islandName);
+        Optional<IslandEntity> islandIdEntity = islandDAO.queryForEq("name", selectArg).stream().findFirst();
         if (islandIdEntity.isPresent()) {
             return islandIdEntity.get().getId();
         }
